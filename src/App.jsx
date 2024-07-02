@@ -3,6 +3,28 @@ import React from 'react'
 import HomePage from './pages/HomePage';
 import MainLayout from './layouts/MainLayout';
 import CreditsPage from './pages/CreditsPage';
+import CustomPage from './pages/CustomPage';
+
+let CustomList = {
+  schoolStart: 10,
+  eatLunch: true,
+  lunchStart: 12,
+  lunchEnd : 16,
+  travel : true
+};
+let LessonsList = {
+  schoolStart: 10,
+  eatLunch: false,
+  lunchStart: 12,
+  lunchEnd : 16,
+  travel : true
+};
+
+
+
+//console.log(CustomList );
+
+
 
 
 const App = () => {
@@ -11,7 +33,7 @@ const App = () => {
     <Route path='/' element={<MainLayout/>}>
       <Route index element = {<HomePage/>}/>
       <Route path='/Tools' element = {<HomePage/>}/>
-      <Route path='/Custom' element = {<HomePage/>}/>
+      <Route path='/Custom' element = {<CustomPage/>}/>
       <Route path='/Credits' element = {<CreditsPage/>}/>
     </Route>
   )
@@ -22,4 +44,4 @@ const App = () => {
   )
 };
 
-export default App;
+export {App as default, CustomList, LessonsList};
