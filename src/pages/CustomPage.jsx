@@ -21,7 +21,7 @@ const CustomPage = () => {
         CustomList.lunchEnd = document.getElementById('lunchEnd').value;
         CustomList.travel = document.getElementById('travel').value;
         setSaved(true);
-        console.log(CustomList);
+        //console.log(CustomList);
     }
 
     return (
