@@ -11,7 +11,10 @@ let CustomList = {
   eatLunch: true,
   lunchStart: 12,
   lunchEnd : 16,
-  travel : true
+  travel : true,
+  year : '2023-2024',
+  semester: '2'
+
 };
 let LessonsList = [];
 

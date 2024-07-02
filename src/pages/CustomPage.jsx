@@ -20,8 +20,10 @@ const CustomPage = () => {
         CustomList.lunchStart = document.getElementById('lunchStart').value;
         CustomList.lunchEnd = document.getElementById('lunchEnd').value;
         CustomList.travel = document.getElementById('travel').value;
+        CustomList.semester = document.getElementById('semester').value;
+        CustomList.year = document.getElementById('acadYear').value;
         setSaved(true);
-        //console.log(CustomList);
+        console.log(CustomList);
     }
 
     return (
@@ -80,6 +82,30 @@ const CustomPage = () => {
                     <select id="travel" name="travel" className="text-2xl" onChange={unsave} defaultValue={CustomList.travel}>
                         <option value='true' className="text-2xl">Yes</option>
                         <option value='false' className="text-2xl">No</option>
+                    </select>
+                    
+                </div>
+
+
+                <div className="flex mb-5">
+                    <p className="text-2xl">
+                        Academic Year
+                    </p>
+                    <select id="acadYear" name="acadYear" className="text-2xl" onChange={unsave} defaultValue={CustomList.year}>
+                        <option value='2023-2024' className="text-2xl">2023/2024</option>
+                        <option value='2024-2025' className="text-2xl">2024/2025</option>
+                    </select>
+                    
+                </div>
+
+
+                <div className="flex mb-5">
+                    <p className="text-2xl">
+                        Semester:
+                    </p>
+                    <select id="semester" name="semester" className="text-2xl" onChange={unsave} defaultValue={CustomList.semester}>
+                        <option value='1' className="text-2xl">1</option>
+                        <option value='2' className="text-2xl">2</option>
                     </select>
                     
                 </div>

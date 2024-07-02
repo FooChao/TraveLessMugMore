@@ -1,5 +1,6 @@
 import React from 'react';
 import { LessonsList } from '../App';
+import { CustomList } from '../App';
 
 const ToolsTitle = () => {
     const addModules = (event) => {
@@ -10,15 +11,20 @@ const ToolsTitle = () => {
 
         const fetchJobs = async () => {
             try {
-                const res = await fetch(`https://api.nusmods.com/v2/2023-2024/modules/${code}.json`);
+                
+                const res = await fetch(`https://api.nusmods.com/v2/${CustomList.year}/modules/${code}.json`);
                 const data = await res.json();
-                needed = data.semesterData.map(semester => ({
+                needed = data.semesterData
+                .map(semester => ({
                     semester: semester.semester,
                     timetable : semester.timetable
-                }));               
+                }))
+                .filter(item => item.semester == CustomList.semester)[0];
+                
+                //console.log(needed);
 
             } catch (error) {
-                console.log('Error');
+                console.log('Error', error);
             } finally {
                 console.log(needed);
             }
