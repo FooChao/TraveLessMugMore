@@ -1,5 +1,6 @@
 import React from 'react'
 import { LessonsList } from '../App';
+import { lessonRefresher } from '../components/ToolsData';
 
 const handleData = (moduleData) => {
     let timetable = moduleData.timetable;
@@ -8,11 +9,11 @@ const handleData = (moduleData) => {
         arrOflesson : []
     }
 
-    console.log('here');
+    //console.log('here');
     
     while (timetable.length != 0) {
         const lessonType = timetable[0].lessonType;
-        console.log(lessonType);
+        //console.log(lessonType);
         const handled = timetable.filter(lesson => {
             //console.log(lesson.lessonType);
             return lesson.lessonType == lessonType;
@@ -31,6 +32,8 @@ const handleData = (moduleData) => {
     LessonsList.push(saved);
 
     console.log(LessonsList);
+
+    lessonRefresher();
     
 
 }
