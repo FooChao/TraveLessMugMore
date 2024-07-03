@@ -1,11 +1,13 @@
 import React from 'react';
 import { LessonsList } from '../App';
 import { CustomList } from '../App';
+import handleData from '../functions/handleData';
 
 const ToolsTitle = () => {
     const addModules = (event) => {
         event.preventDefault();
-        const code = document.getElementById('modulesAdded').value;
+        const code = document.getElementById('modulesAdded').value.toUpperCase();
+        
         console.log(code);
         let needed = null;
 
@@ -16,10 +18,21 @@ const ToolsTitle = () => {
                 const data = await res.json();
                 needed = data.semesterData
                 .map(semester => ({
+                    moduleCode : code,
                     semester: semester.semester,
                     timetable : semester.timetable
                 }))
                 .filter(item => item.semester == CustomList.semester)[0];
+                needed.timetable.sort(
+                    (first,second) => first.lessonType == second.lessonType 
+                        ? first.classNo.localeCompare(second.classNo)
+                        : first.lessonType.localeCompare(second.lessonType)
+
+                );
+
+                handleData(needed);
+
+
                 
                 //console.log(needed);
 
