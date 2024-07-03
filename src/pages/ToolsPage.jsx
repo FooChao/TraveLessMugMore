@@ -46,8 +46,14 @@ const ToolsPage = () => {
             );
 
           handleData(needed); 
+
+          //bug here
+          //does not update when clicked
             
           updateLessons(LessonsList);
+
+          //bug here
+          //does not update when clicked
           
           
              
@@ -55,7 +61,7 @@ const ToolsPage = () => {
       } catch (error) {
         console.log('Error', error);
       } finally {
-        console.log(lessons);
+        //console.log(lessons);
       }
       
 

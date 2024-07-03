@@ -12,7 +12,7 @@ let updateLessonsFunction = null;
 
 const lessonRefresher = () => {
   // If updateLessonsFunction is set, use it to update lessons
-  console.log('hi');
+  //console.log('hi');
   if (updateLessonsFunction) {
     console.log('bye');
     updateLessonsFunction(LessonsList);

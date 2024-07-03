@@ -31,7 +31,7 @@ const handleData = (moduleData) => {
 
     LessonsList.push(saved);
 
-    console.log(LessonsList);
+    //console.log(LessonsList);
 
     lessonRefresher();
     
@@ -79,10 +79,10 @@ const helperNoOption = (timetable, moduleCode) => {
             }
         } else {
             //if can go e we go e , else we try go com, go outside if no choice
-            if (period[slot].location == '-') {
+            if (period[slot].location == 'NA') {
                 continue;
-            } else if (location == '-') {
-                period[slot].location = '-';
+            } else if (location == 'NA') {
+                period[slot].location = 'NA';
             } else if (period[slot].location == 'EXT' && location == 'COM') {
                 period[slot].location = location;
             }
@@ -153,10 +153,10 @@ const helperNormal = (timetable, moduleCode) => {
             }
         } else {
             //if can go e we go e , else we try go com, go outside if no choice
-            if (period[slot].location == '-') {
+            if (period[slot].location == 'NA') {
                 continue;
-            } else if (location == '-') {
-                period[slot].location = '-';
+            } else if (location == 'NA') {
+                period[slot].location = 'NA';
             } else if (period[slot].location == 'EXT' && location == 'COM') {
                 period[slot].location = location;
             }
@@ -164,6 +164,9 @@ const helperNormal = (timetable, moduleCode) => {
 
     }
     //end of loop
+
+    //sorting Timetable summarised
+    timetableSummarised.sort((x,y) => x.period - y.period);
 
 
     //compiled period handling so can be faster
@@ -196,7 +199,7 @@ const helperNormal = (timetable, moduleCode) => {
 
 const helperVenue = (venue) => {
     if (venue == 'E-Learn_C') {
-        return '-'
+        return 'NA'
     }
     if (venue.substring(0,3) == 'COM' || venue == 'LT16' || venue == 'LT17' || venue == 'LT18' || venue == 'LT19') {
         return 'COM'

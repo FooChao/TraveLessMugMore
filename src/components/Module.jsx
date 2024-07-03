@@ -1,9 +1,12 @@
 import React from 'react'
 import { useState } from 'react';
 import { LessonsList } from '../App';
+import ModuleLessonType from './ModuleLessonType';
 
 const Module = ({lesson}) => {
     //console.log(lesson)
+
+
     //console.log(lesson.moduleCode);
     const [deleted, setDeleted] = useState(false);
     const deleteIt = () => {
@@ -23,6 +26,12 @@ const Module = ({lesson}) => {
     <div class={deleted? 'hidden' : '' + "flex justify-between items-center bg-green-400 mt-6"}>
       <h1 class=" pl-3 text-3xl font-bold"> {lesson.moduleCode}</h1>
       <button onClick = {deleteIt} class =" px-20 bg-red-500 font-bold text-4xl hover:bg-orange-400"> X </button>
+    </div>
+    <div class={deleted? 'hidden' : "flex flex-col xl:flex-row "}>
+      {lesson.arrOflesson.map((lessonType,index) => {
+        return <ModuleLessonType key ={index} lesson = {lessonType} />
+      })}
+       
     </div>
 
     </>
