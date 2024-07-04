@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { LessonsList } from '../App';
 import Module from '../components/Module';
 import { useNavigate } from 'react-router-dom';
+import Timetable from '../components/Timetable';
 
 const ToolsPage = () => {
 
@@ -97,6 +98,8 @@ const ToolsPage = () => {
       {lessons.map((lesson, index) => {
         return <Module key= {index} lesson = {lesson} />
       })}
+
+      <Timetable />
 
       
     </div>    
