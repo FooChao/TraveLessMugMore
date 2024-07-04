@@ -12,7 +12,7 @@ import SlotTravel from './SlotTravel'
 
 const Timetable = () => {
 
-    const[table, setTable] = useState([TimetableSummary,TimetableDetailed]);
+    const[table, setTable] = useState([TimetableSummary[0],TimetableDetailed[0]]);
 
     const renderSlot = (value, lesson) => {
         if (value === undefined) {
