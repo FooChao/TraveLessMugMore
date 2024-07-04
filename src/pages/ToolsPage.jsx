@@ -19,6 +19,8 @@ const ToolsPage = () => {
     updateLessons(LessonsList);
     return;    
   }, []);
+
+
   
 
   const addModules = async (event) => {
@@ -49,6 +51,8 @@ const ToolsPage = () => {
 
           //bug here
           //does not update when clicked
+
+          //updateLessons([]);
             
           updateLessons(LessonsList);
 
@@ -64,7 +68,7 @@ const ToolsPage = () => {
         //console.log(lessons);
       }
       
-
+      
     }
         
     fetchJobs();

@@ -226,7 +226,7 @@ const helperSpecial= ((timetable,moduleCode) => {
         let pushIt = true;
         for (const [index,elements] of returned.timetable.entries()) {
             if (arraysEqual(newStuff.periodCompiled, elements.periodCompiled)) {
-                console.log('considered');
+                //console.log('considered');
                 let firstBetter = true;
                 let secondBetter = true;
                 for (let i = 0; i < elements.periodCompiled.length; i++) {
@@ -235,7 +235,7 @@ const helperSpecial= ((timetable,moduleCode) => {
                         newStuff.period[timeSlot].location,
                         elements.period[timeSlot].location                       
                     )
-                    console.log(better);
+                    //console.log(better);
                     if (better == 1) {
                         secondBetter = false;
                     }
@@ -290,7 +290,7 @@ const helperSpecialOption = ((timetable) => {
         const length = (element.endTime - element.startTime)/100;
         const location = helperVenue(element.venue);
         const day = helperDay(element.day);
-        console.log(day);
+        //console.log(day);
         const timeSlot = day * 13
             + parseInt(element.startTime)/100 - 8;
         const object = {

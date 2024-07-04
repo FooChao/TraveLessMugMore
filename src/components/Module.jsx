@@ -23,11 +23,11 @@ const Module = ({lesson}) => {
   return (
     <>
 
-    <div class={deleted? 'hidden' : '' + "flex justify-between items-center bg-green-400 mt-6"}>
-      <h1 class=" pl-3 text-3xl font-bold"> {lesson.moduleCode}</h1>
-      <button onClick = {deleteIt} class =" px-20 bg-red-500 font-bold text-4xl hover:bg-orange-400"> X </button>
+    <div className={deleted? 'hidden' : '' + "flex justify-between items-center bg-green-400 mt-6"}>
+      <h1 className=" pl-3 text-3xl font-bold"> {lesson.moduleCode}</h1>
+      <button onClick = {deleteIt} className =" px-20 bg-red-500 font-bold text-4xl hover:bg-orange-400"> X </button>
     </div>
-    <div class={deleted? 'hidden' : "flex flex-col xl:flex-row "}>
+    <div className={deleted? 'hidden' : "flex flex-col xl:flex-row "}>
       {lesson.arrOflesson.map((lessonType,index) => {
         return <ModuleLessonType key ={index} lesson = {lessonType} />
       })}

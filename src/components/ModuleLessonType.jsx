@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState } from 'react';
 import IndivLesson from './IndivLesson';
+import SPIndivLesson from './SPIndivLesson';
 
 const ModuleLessonType = ({lesson}) => {
     const [skip, setSkip] = useState(lesson.skip);
@@ -41,7 +42,9 @@ const ModuleLessonType = ({lesson}) => {
                 <button class ={skip == "JoinAny" ? "bg-green-500 px-5  text-md hover:bg-orange-400" : "px-5  text-md hover:bg-orange-400"} onClick={setJoinAny}> JoinAny </button>                     
             </div>
             {hidden ? '' : lesson.timetable.map((indiv, index) => {
-                return <IndivLesson key={index} indiv = {indiv} length = {lesson.length}/>
+                return  lesson.type == 0 
+                    ? <IndivLesson key={index} indiv = {indiv} length = {lesson.length}/> 
+                    : <SPIndivLesson key = {index} indiv = {indiv}/>
             })}
         </div>
     )
