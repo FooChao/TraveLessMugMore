@@ -41,7 +41,7 @@ const ModuleLessonType = ({lesson}) => {
                 <button class ={skip == "JoinAny" ? "bg-green-500 px-5  text-md hover:bg-orange-400" : "px-5  text-md hover:bg-orange-400"} onClick={setJoinAny}> JoinAny </button>                     
             </div>
             {hidden ? '' : lesson.timetable.map((indiv, index) => {
-                return <IndivLesson key={index} indiv = {indiv}/>
+                return <IndivLesson key={index} indiv = {indiv} length = {lesson.length}/>
             })}
         </div>
     )

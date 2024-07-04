@@ -1,8 +1,9 @@
 import React from 'react'
 import { useState } from 'react'
 import periodToTime from '../functions/periodToTime';
+import periodToTimeDouble from '../functions/periosToTimeDouble';
 
-const IndivLesson = ({indiv}) => {
+const IndivLesson = ({indiv,length}) => {
     console.log(indiv);
     const [included,setIncluded] = useState(indiv.included);
 
@@ -10,8 +11,13 @@ const IndivLesson = ({indiv}) => {
         setIncluded(truthy);
         indiv.included = truthy;
     }
+    console.log(indiv);
+    console.log(length);
 
-    const title = periodToTime(indiv.period) + ', ' + indiv.location;
+    const title = length == 1 
+        ? (periodToTime(indiv.period) + ', ' + indiv.location)
+        : (periodToTimeDouble(indiv.period) + ', ' + indiv.location);
+    console.log(title);
     const nonBreakingSpace = `\u00A0`;
 
     return (
