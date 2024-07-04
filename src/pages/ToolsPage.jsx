@@ -54,7 +54,7 @@ const ToolsPage = () => {
 
           //updateLessons([]);
             
-          updateLessons(LessonsList);
+          updateLessons([...LessonsList]);
 
           //bug here
           //does not update when clicked
