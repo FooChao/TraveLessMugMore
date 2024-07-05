@@ -99,10 +99,15 @@ const generateTimetable = () => {
                             if (success) {
                                 lessons.pop();
                             } else {
-                                alert('error adding a single option lesson. They clashed with others of same kind.')
+                                alert('error adding a single option lesson. They clashed with others of same kind.');
                             }                       
                         } else { //multi session type
-                            success = tryToAddOne(lesson.timetable[i],lessons.moduleCode,lessons.lessonType,lessons.skip,timetableDetailed,timetableSummary,lunchRemaining,dayOccupied);
+                            success = tryToAddOne(lesson.timetable[i],lesson.moduleCode,lesson.lessonType,lesson.skip,timetableDetailed,timetableSummary,lunchRemaining,dayOccupied);
+                            if (success) {
+                                lessons.pop();                                
+                            } else {
+                                alert('error adding a single option lesson. They clashed with others of same kind.');
+                            }
                         }
                     } // else continue finding the one needed
                             
@@ -549,7 +554,22 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
 }
 
 const tryToAddOne = (newTimetable,newModuleCode,newLessonType,newLessonSkip,timetableDetailed,timetableSummary,lunchRemaining,dayOccupied) => {
-    return false;
+    // tryToAddZero (newTimetable,newModuleCode,newLessonType,newLessonSkip,newLessonLength,timetableDetailed,timetableSummary,lunchRemaining,dayOccupied)
+    let allSucceed = true;
+    const archivedTimetableDetailed = [...timetableDetailed];
+    const archivedTimetableSummary = [...timetableSummary];
+    newTimetable.timetable.forEach((needed) => {
+        allSucceed = allSucceed && tryToAddZero(needed,newModuleCode,newLessonType,newLessonSkip,needed.length,timetableDetailed,timetableSummary,lunchRemaining,dayOccupied);
+    })
+    if (allSucceed) {
+        return true;
+    } else {
+        for (let i = 0; i <= 64; i++) {
+            timetableDetailed[i] = archivedTimetableDetailed[i];
+            timetableSummary[i] = archivedTimetableSummary[i];
+        }
+        return false;
+    }
 }
 
 export default generateTimetable
