@@ -3,6 +3,8 @@ import { TimetableDetailed } from '../App'
 import { TimetableSummary } from '../App'
 import { useState, useEffect } from 'react'
 
+import generateTimetable from '../functions/generateTimetable'
+
 import SlotLive from './SlotLive'
 import SlotLunch from './SlotLunch'
 import SlotNull from './SlotNull'
@@ -21,11 +23,18 @@ const Timetable = () => {
         switch (value) {
           case 'TravelOut':
           case 'TravelBack':
+          case 'LunchTravelOut':
+          case 'LunchTravelBack':
             return <SlotTravel />;
           case 'JoinAny':
           case 'Live':
             return <SlotLive lesson={lesson} />;
           case 'Recorded':
+          case 'RecordedLunch' :
+          case 'RecordedTravelBack':
+          case 'RecordedTravelOut':
+          case 'RecordedLunchTravelOut' :
+          case 'RecordedLunchTravelBack' :
             return <SlotRecorded lesson={lesson} />;
           case 'Stacked':
             return <SlotStacked lesson={lesson} />;
@@ -37,6 +46,11 @@ const Timetable = () => {
             return <SlotNull />;
         }
       };
+
+      const loadTimetable = () => {
+        generateTimetable();
+        setTable([TimetableSummary[0],TimetableDetailed[0]]);
+      }
 
 
 
@@ -209,6 +223,7 @@ const Timetable = () => {
                         <div className="block lg:hidden text-sm md:text-md border-2 border-black bg-purple-400 px-auto w-1/2 py-5">
                             Fri
                         </div>
+                        {table[0] && renderSlot(table[0][52], table[1] && table[1][52])}
                         {table[0] && renderSlot(table[0][53], table[1] && table[1][53])}
                         {table[0] && renderSlot(table[0][54], table[1] && table[1][54])}
                         {table[0] && renderSlot(table[0][55], table[1] && table[1][55])}
@@ -220,7 +235,7 @@ const Timetable = () => {
                         {table[0] && renderSlot(table[0][61], table[1] && table[1][61])}
                         {table[0] && renderSlot(table[0][62], table[1] && table[1][62])}
                         {table[0] && renderSlot(table[0][63], table[1] && table[1][63])}
-                        {table[0] && renderSlot(table[0][64], table[1] && table[1][64])}
+
                     </div>
                 </div>
 
@@ -230,7 +245,7 @@ const Timetable = () => {
 
             {/* <!--Generate Button--> */}
             <div className="items-center justify-around text-center text-4xl mt-5">
-                <button className="bg-red-500 border-2 border-black hover:bg-orange-400">
+                <button className="bg-red-500 border-2 border-black hover:bg-orange-400" onClick={loadTimetable}>
                     Generate
                 </button>
             </div>

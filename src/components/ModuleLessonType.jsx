@@ -32,14 +32,14 @@ const ModuleLessonType = ({lesson}) => {
     //console.log(lesson);
     return (
     
-        <div class="xl:w-1/2">
-            <div class="mt-2 flex bg-white border-2 border-black  items-center justify-around ">
-                <h6 class ="txt-s hover:text-gray-500" onClick={adjustHidden} >
+        <div className="xl:w-1/2">
+            <div className="mt-2 flex bg-white border-2 border-black  items-center justify-around ">
+                <h6 className ="txt-s hover:text-gray-500" onClick={adjustHidden} >
                     {title.padEnd(30,nonBreakingSpace)} 
                 </h6>
-                <button class ={skip == "Live" ? "bg-green-500 px-5  text-md hover:bg-orange-400" : "px-5  text-md hover:bg-orange-400"} onClick={setLive}> Live </button> 
-                <button class ={skip == "Recorded" ? "bg-green-500 px-5  text-md hover:bg-orange-400" : "px-5  text-md hover:bg-orange-400"} onClick={setRecorded}> Recorded </button> 
-                <button class ={skip == "JoinAny" ? "bg-green-500 px-5  text-md hover:bg-orange-400" : "px-5  text-md hover:bg-orange-400"} onClick={setJoinAny}> JoinAny </button>                     
+                <button className ={skip == "Live" ? "bg-green-500 px-5  text-md hover:bg-orange-400" : "px-5  text-md hover:bg-orange-400"} onClick={setLive}> Live </button> 
+                <button className ={skip == "Recorded" ? "bg-green-500 px-5  text-md hover:bg-orange-400" : "px-5  text-md hover:bg-orange-400"} onClick={setRecorded}> Recorded </button> 
+                <button className ={skip == "JoinAny" ? "bg-green-500 px-5  text-md hover:bg-orange-400" : "px-5  text-md hover:bg-orange-400"} onClick={setJoinAny}> JoinAny </button>                     
             </div>
             {hidden ? '' : lesson.timetable.map((indiv, index) => {
                 return  lesson.type == 0 

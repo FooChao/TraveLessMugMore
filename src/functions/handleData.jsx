@@ -39,7 +39,7 @@ const handleData = (moduleData) => {
 }
 
 const helperBoss = (timetable,moduleCode) => {
-    console.log(timetable);
+    //console.log(timetable);
     if (timetable.length <= 1) {
         return helperNoOption(timetable,moduleCode);
     } else if(timetable[0].classNo != timetable[1].classNo){

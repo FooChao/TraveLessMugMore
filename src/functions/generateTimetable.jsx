@@ -1,0 +1,555 @@
+import React from 'react';
+import { TimetableDetailed } from '../App';
+import { TimetableSummary } from '../App';
+import { LessonsList } from '../App';
+import { CustomList } from '../App';
+
+
+
+const generateTimetable = () => {
+
+    console.log(LessonsList);
+  
+    
+    //step 0 : preprocessing datas
+
+    // 0.0 -> initialising variables
+
+        const timetableDetailed = []; // diff from imported
+        const timetableSummary = [];  // diff from imported
+        const dayOccupied = [false,false,false,false,false]; //keep check of occupied days
+        const activeDays = 0;
+        const lunchRemaining = [1,1,1,1,1];
+        const lessons = []; //lessons remaining will push in step 0.2
+
+
+    // 0.1 -> handling custom
+
+        //0.1.1 -> handling travel
+
+        const travel = CustomList.travel;
+
+        //0.1.2 -> handling schol start -> convert it to period
+
+        const firstPeriod = CustomList.schoolStart - 8;
+
+        // 0.1.3 -> handling lunch -> pushing lunch into timetable/lunchRemaining
+        if (CustomList.eatLunch){ // if eatLunch
+            const lunchStart = CustomList.lunchStart - 8; // convert to period
+            const lunchEnd = CustomList.lunchEnd - 8 - 1; // convert to period
+
+            for (let i = 0; i <= 52 ; i = i + 13) {  // handling all weeks data
+                for (let j = lunchStart; j <= lunchEnd; j++) { // handling all lunch period
+                    timetableSummary[i+j] = 'Lunch';
+                }
+            }
+
+            const lunchTotal = lunchEnd - lunchStart + 1;
+            for(let i = 0; i <= 4; i++) {
+                lunchRemaining[i] = lunchTotal; //handling remaining lunch
+            }
+        }   // else do nothing as all initialised already
+
+        
+    
+    //0.2 handling lessons
+
+        //0.2.1 putting them into lessons without categorising into modules 
+        //as all equally ipt regardless of module
+
+        for (let element of LessonsList) {
+            for (let innerElement of element.arrOflesson) {
+                lessons.push(innerElement);
+            }
+        }
+
+        
+
+        //0.2.2 recalculate all lessons priority / days / totalDays based on whether it is included
+        // set selected to null
+        
+
+        lessons.forEach((element) => {
+            console.log(element);
+            zeroUpdateDataOverall(element);
+        });
+
+        //0.2.3 sort the lessons by priority
+
+        lessons.sort((a,b) => b.priority - a.priority);  // smallest behind for easier pop
+
+
+
+
+
+    //Step 1 : handling priority 0 and priority -1
+        console.log(lessons);
+
+        for (let i = lessons.length - 1; i >= 0 ; i--) {
+            const lesson = lessons[i];
+            if (lesson.priority == -1) {  //useless throw away
+                lessons.pop();
+            } else if (lesson.priority == 0) { //loop through timetable find selected one                 
+                for (let i = 0; i < lesson.timetable.length; i++) {
+                    if(lesson.timetable[i].included) {  // find needed one
+                        let success = false;  // default false 
+                        if (lesson.type == 0) { //single session period
+                            //console.log('here');
+                            success = tryToAddZero(lesson.timetable[i],lesson.moduleCode,lesson.lessonType,lesson.skip,lesson.length,timetableDetailed,timetableSummary,lunchRemaining,dayOccupied); // if success set it to true
+                            if (success) {
+                                lessons.pop();
+                            } else {
+                                alert('error adding a single option lesson. They clashed with others of same kind.')
+                            }                       
+                        } else { //multi session type
+                            success = tryToAddOne(lesson.timetable[i],lessons.moduleCode,lessons.lessonType,lessons.skip,timetableDetailed,timetableSummary,lunchRemaining,dayOccupied);
+                        }
+                    } // else continue finding the one needed
+                            
+                }
+
+                
+            } else { //no more 0 or -1                 
+                break;
+            }
+        }
+        
+
+        console.log(lessons);  //reference
+        TimetableDetailed[0] = timetableDetailed;
+        TimetableSummary[0] = timetableSummary;
+        console.log(dayOccupied);
+        console.log(lunchRemaining);
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+// for Step 0.2.2
+const zeroUpdateDataOverall = (lesson ) => { //zero representing the step
+    lesson.selected = undefined; // hard reset selected first if present
+    if (lesson.type == 0) {
+        zeroUpdateDataZero(lesson);
+    } else {
+        zeroUpdateDataOne(lesson);
+    }
+
+}
+
+const zeroUpdateDataZero = (lesson) => {
+    // hard reset first
+    lesson.days = [false,false,false,false,false]; 
+    lesson.totalDays = 0;
+    let options = 0;
+    //loop through all in periodCompiled
+    lesson.periodCompiled.forEach((numeral) => {
+        const timeSlot = lesson.period[numeral];
+        //console.log(timeSlot);
+        if (timeSlot != undefined && timeSlot.included) { // if included
+            const day = Math.floor(timeSlot.period / 13);
+            options++;
+            if (!lesson.days[day]) { // days still false
+                lesson.days[day] = true; //set it true
+                lesson.totalDays++; //increment totalDays
+            }
+            // else do absolutely nothing
+        }
+    });
+    
+    if (options == 0) {
+        //nothing included
+        //user is a troller so we exclude the whole thing
+        lesson.selected = null;
+        lesson.priority = -1;
+    } else if (options == 1) {
+        //only 1 included
+        lesson.priority = 0; // we handle selected later
+    } else if (lesson.totalDays == 1) {
+        //only 1 day
+        lesson.priority = 1;
+    } else if (lesson.skip == 'Recorded') {
+        lesson.priority = 2;
+    } else {
+        lesson.priority = 4;
+    }
+}
+
+const zeroUpdateDataOne = (lesson) => {
+    let options = 0;
+    lesson.timetable.forEach(option => {
+        if (option.included) {
+            options++;
+        }
+    });
+    
+    if (options == 0) {
+        //nothing included
+        //user is a troller so we exclude the whole thing
+        lesson.selected = null;
+        lesson.priority = -1;
+    } else if (options == 1) {
+        //only 1 included
+        lesson.priority = 0; // we handle selected later
+    } else if (lesson.skip == 'Recorded') {
+        lesson.priority = 2;
+    } else {
+        lesson.priority = 3;
+    }
+}
+
+
+
+
+
+//For step 1
+
+const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,newLessonLength,timetableDetailed,timetableSummary,lunchRemaining,dayOccupied) => { // newTimetable (included,period,location)
+    //console.log('hi');
+    const timeSlot = newTimetable.period;
+    const incumbent = timetableSummary[timeSlot];
+    const incumbentDet = timetableDetailed[timeSlot]; // may need to replace it back if first succeed second fail
+    const next = timetableSummary[timeSlot+1];
+    const nextDet = timetableDetailed[timeSlot+1];
+    const dayToAdd = Math.floor(timeSlot/13);
+
+    const firstPeriod = newLessonSkip; // first period is always new Lesson Skip
+    console.log(firstPeriod);
+    const secondPeriod = newLessonLength == 2 
+        ? newLessonSkip //length 2 will be same as first period
+        : newLessonSkip == 'Recorded'
+        ? null // reccorded means nothing next
+        : !CustomList.travel
+        ? null // no travel means no need care travel
+        : newTimetable.location == 'COM' 
+        ? 'TravelOut'
+        : 'TravelBack' // assuming people won't go e learning lecture.
+
+    let lunchConsumed = false; // if consumed in firstPeriod add it back if needed
+
+    const success = helper(firstPeriod,timeSlot,incumbent,incumbentDet);
+    if (!success) {
+        return false; // if firstPeriod fail already no need try
+    }
+
+    if(secondPeriod == null) {  // no second period straight return
+        return true;
+    }
+
+    if (helper(secondPeriod,timeSlot+1,next,nextDet)) {
+        if (newLessonSkip == 'Live' || newLessonSkip == 'JoinAny'){
+            dayOccupied[dayToAdd] = true;
+        }
+        return true;
+    } else {
+        if(lunchConsumed) {
+            lunchRemaining[dayToAdd]++;
+        }
+        timetableSummary[timeSlot] = incumbent; //reset back
+        timetableDetailed[timeSlot] = incumbentDet; //reset back
+        return false;
+    }
+
+    // five cases for eachPeriod
+    function helper(added, placeToAdd,current,currentDetails){
+        if (added == 'Live') {
+            switch (current) {
+                case 'Live' :
+                case 'Stacked' :
+                case 'Recorded' :
+                case 'JoinAny' : 
+                case 'RecordedLunch' :
+                case 'RecordedTravelBack' :
+                case 'RecordedTravelOut' :
+                case 'RecordedLunchTravelOut' :
+                case 'TravelBack' :
+                case 'LunchTravelBack' :
+                case 'RecordedLunchTravelBack' :
+                    return false;
+                case 'TravelOut' :
+                    if (newTimetable.location == 'COM') { // no need travel same location
+                        timetableSummary[placeToAdd] = added;
+                        timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];
+                        return true;
+                    } else {
+                        return false;
+                    }           
+    
+                case 'Lunch' :
+                    if (lunchRemaining[dayToAdd] > 1) {  // still can waste one lunch period
+                        lunchRemaining[dayToAdd]--;
+                        lunchConsumed = true;
+                        timetableSummary[placeToAdd] = added;
+                        timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];
+                        return true;
+                    } else {
+                        return false;
+                    }
+                case 'LunchTravelOut' :
+                    if (lunchRemaining[dayToAdd] > 1) {  // still can waste one lunch period
+                        if (newTimetable.location == 'COM') { // no need travel same location
+                            lunchRemaining[dayToAdd]--;
+                            lunchConsumed = true;
+                            timetableSummary[placeToAdd] = added;
+                            timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];
+                            return true;
+                        } else {
+                            return false;
+                        }
+                        
+                    } else {
+                        return false;
+                    }
+                default : //undefined
+                    timetableSummary[placeToAdd] = added;
+                    timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];
+                    return true;
+            }
+
+        } else if (added == 'JoinAny') {
+            switch (current) {
+                case 'Live' :
+                case 'Stacked' :
+                case 'JoinAny' : 
+                case 'RecordedTravelBack' :
+                case 'TravelBack' :
+                case 'RecordedLunchTravelBack' :
+                case 'LunchTravelBack':
+                    return false;                
+                case 'Recorded' :
+                    timetableSummary[placeToAdd] = 'Stacked';
+                    timetableDetailed[placeToAdd] = [
+                        [newModuleCode,newLessonType,newTimetable.location],
+                        timetableDetailed[placeToAdd]
+                    ];
+                    return true;               
+                case 'RecordedTravelOut' :
+                    if (newTimetable.location == 'COM') { // no need travel same location
+                        timetableSummary[placeToAdd] = 'Stacked';
+                        timetableDetailed[placeToAdd] = timetableDetailed[placeToAdd] = [
+                            [newModuleCode,newLessonType,newTimetable.location],
+                            timetableDetailed[placeToAdd]
+                        ];
+                        return true;
+                    } else {
+                        return false;
+                    }                
+                case 'TravelOut' :
+                    if (newTimetable.location == 'COM') { // no need travel same location
+                        timetableSummary[placeToAdd] = added;
+                        timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];
+                        return true;
+                    } else {
+                        return false;
+                    }
+                case 'Lunch' :
+                    if (lunchRemaining[dayToAdd] > 1) {  // still can waste one lunch period
+                        lunchRemaining[dayToAdd]--;
+                        lunchConsumed = true;
+                        timetableSummary[placeToAdd] = added;
+                        timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];
+                        return true;
+                    } else {
+                        return false;
+                    }  
+                case 'LunchTravelOut' :
+                    if (lunchRemaining[dayToAdd] > 1 && newTimetable.location == 'COM') {  // still can waste one lunch period
+                        lunchRemaining[dayToAdd]--;
+                        lunchConsumed = true;
+                        timetableSummary[placeToAdd] = added; // can just put joinAny as only recorded can stack with joinAny
+                        timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];
+                        return true;
+                    } else {
+                        return false;
+                    } 
+
+                case 'RecordedLunch' :
+                    if (lunchRemaining[dayToAdd] > 1) {  // still can waste one lunch period
+                        lunchRemaining[dayToAdd]--;
+                        lunchConsumed = true;
+                        timetableSummary[placeToAdd] = 'Stacked';
+                        timetableDetailed[placeToAdd] = [
+                        [newModuleCode,newLessonType,newTimetable.location],
+                        timetableDetailed[placeToAdd]
+                    ];
+                        return true; 
+                    } else {
+                        return false;
+                    }
+                    case 'RecordedLunchTravelOut' :
+                        if (lunchRemaining[dayToAdd] > 1 && newTimetable.location == 'COM') {  // still can waste one lunch period
+                            lunchRemaining[dayToAdd]--;
+                            lunchConsumed = true;
+                            timetableSummary[placeToAdd] = 'Stacked';
+                            timetableDetailed[placeToAdd] = [
+                                [newModuleCode,newLessonType,newTimetable.location],
+                                timetableDetailed[placeToAdd]
+                            ];
+                            return true; 
+                        } else {
+                            return false;
+                        }
+                                  
+                default : //undefined
+                    timetableSummary[placeToAdd] = added;
+                    timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];
+                    return true;
+             
+            }
+
+        } else if (added == 'Recorded') {
+            switch (current) {
+                case 'Live' :
+                case 'Stacked' :
+                case 'Recorded' :
+                case 'RecordedLunch' :
+                case 'RecordedTravelBack' :
+                case 'RecordedTravelOut' :
+                case 'RecordedLunchTravelOut' :
+                case 'RecordedLunchTravelBack' :
+                    return false; //recorded lesson on paper of courserekt can't be stacked
+                case 'JoinAny' : 
+                    timetableSummary[placeToAdd] = 'Stacked';
+                    timetableDetailed[placeToAdd] = [
+                        timetableDetailed[placeToAdd],
+                        [newModuleCode,newLessonType,newTimetable.location]
+                    ];
+                return true;
+                case 'TravelBack' :
+                    timetableSummary[placeToAdd] = 'RecordedTravelBack';
+                    timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];
+                    return true; 
+                case 'TravelOut' :
+                    timetableSummary[placeToAdd] = 'RecordedTravelOut';
+                    timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];
+                    return true;
+                case 'Lunch' : //it is recorded we can still eat lunch
+                    timetableSummary[placeToAdd] = 'RecordedLunch';
+                    timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];
+                    return true;  
+                case 'LunchTravelOut' :
+                    timetableSummary[placeToAdd] = 'RecordedLunchTravelOut';
+                    timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];
+                case 'LunchTravelBack' :
+                    timetableSummary[placeToAdd] = 'RecordedLunchTravelBack';
+                    timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];                   
+                default : //undefined
+                    timetableSummary[placeToAdd] = 'Recorded';
+                    timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];
+                    return true; 
+             
+            }
+            
+
+        } else if (added == 'TravelBack') {
+            switch (current) {
+                case 'Live' :
+                case 'Stacked' :
+                case 'JoinAny' :
+                    return false; //because ext venue need time to travel                
+                case 'Recorded' :
+                    timetableSummary[placeToAdd] = 'RecordedTravelBack'; 
+                    return true;               
+                case 'RecordedTravelBack' :
+                case 'RecordedTravelOut' :
+                case 'TravelBack' :
+                case 'TravelOut' :
+                case 'LunchTravelOut' :
+                case 'RecordedLunchTravelOut':
+                case 'LunchTravelBack' :
+                case 'RecordedLunchTravelBack':                
+                    return false; //shouldn't happen in first place as all travelling is is preceded by live lesson which cannot clash
+                case 'RecordedLunch' :
+                    timetableSummary[placeToAdd] = 'RecordedLunchTravelBack';
+                    return true;
+                case 'Lunch' :  
+                    timetableSummary[placeToAdd] = 'LunchTravelBack';  
+                    return true;                
+                default : //undefined
+                    timetableSummary[placeToAdd] = 'TravelBack';
+                    return true;
+             
+            }
+
+        } else if (added == 'TravelOut') {
+            switch (current) {
+                case 'Live' :
+                case 'JoinAny' :
+                    if ((timetableDetailed[placeToAdd][2]) == 'COM') {
+                        return true
+                    } else {
+                        return false;
+                    }
+                case 'Stacked' :
+                    if ((timetableDetailed[placeToAdd][0][2]) == 'COM') {
+                        return true
+                    } else {
+                        return false;
+                    }                 
+                case 'Recorded' :
+                    timetableSummary[placeToAdd] = 'RecordedTravelOut';
+                    return true;
+                case 'RecordedLunch' :
+                    timetableSummary[placeToAdd] = 'RecordedLunchTravelOut';
+                    return true;
+                case 'RecordedTravelBack' :
+                case 'RecordedTravelOut' :
+                case 'TravelBack' :
+                case 'TravelOut' :
+                case 'LunchTravelOut' :
+                case 'RecordedLunchTravelOut':
+                case 'LunchTravelBack' :
+                case 'RecordedLunchTravelBack':
+                    return false; // shouldn't happen in first place
+                case 'Lunch' :
+                    timetableSummary[placeToAdd] = 'LunchTravelOut';
+                    return true;
+                default : //undefined
+                    timetableSummary[placeToAdd] = 'LunchTravelOut';
+                    return true;
+             
+            }
+
+        } else {
+            return false;  // shouldn't reach here
+        }
+    }
+   
+
+}
+
+const tryToAddOne = (newTimetable,newModuleCode,newLessonType,newLessonSkip,timetableDetailed,timetableSummary,lunchRemaining,dayOccupied) => {
+    return false;
+}
+
+export default generateTimetable

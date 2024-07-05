@@ -4,7 +4,7 @@ import periodToTime from '../functions/periodToTime';
 import periodToTimeDouble from '../functions/periosToTimeDouble';
 
 const IndivLesson = ({indiv,length}) => {
-    console.log(indiv);
+    //console.log(indiv);
     const [included,setIncluded] = useState(indiv.included);
 
     const adjust = (truthy) => {
@@ -17,7 +17,7 @@ const IndivLesson = ({indiv,length}) => {
     const title = length == 1 
         ? (periodToTime(indiv.period) + ', ' + indiv.location)
         : (periodToTimeDouble(indiv.period) + ', ' + indiv.location);
-    console.log(title);
+    //console.log(title);
     const nonBreakingSpace = `\u00A0`;
 
     return (
