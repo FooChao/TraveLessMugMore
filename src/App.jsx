@@ -8,10 +8,10 @@ import ToolsPage from './pages/ToolsPage';
 
 let CustomList = {
   schoolStart: 10,
-  eatLunch: true,
+  eatLunch: 'true',
   lunchStart: 12,
   lunchEnd : 16,
-  travel : true,
+  travel : 'true',
   year : '2023-2024',
   semester: '2'
 

@@ -27,14 +27,17 @@ const generateTimetable = () => {
 
         //0.1.1 -> handling travel
 
-        const travel = CustomList.travel;
+        //const travel = CustomList.travel;
 
         //0.1.2 -> handling schol start -> convert it to period
 
         const firstPeriod = CustomList.schoolStart - 8;
 
+        //console.log(CustomList.eatLunch);
+
         // 0.1.3 -> handling lunch -> pushing lunch into timetable/lunchRemaining
-        if (CustomList.eatLunch){ // if eatLunch
+        if (CustomList.eatLunch == 'true'){ // if eatLunch
+            //console.log(CustomList.eatLunch);
             const lunchStart = CustomList.lunchStart - 8; // convert to period
             const lunchEnd = CustomList.lunchEnd - 8 - 1; // convert to period
 
@@ -77,6 +80,9 @@ const generateTimetable = () => {
         //0.2.3 sort the lessons by priority
 
         lessons.sort((a,b) => b.priority - a.priority);  // smallest behind for easier pop
+
+
+        
 
 
 
@@ -126,6 +132,8 @@ const generateTimetable = () => {
 
     //2.0 blocking
 
+        /*
+
         for (let i = lessons.length - 1; i >= 0 ; i--) {
             const lesson = lessons[i];
             if (lesson.priority <= 1) {
@@ -149,13 +157,14 @@ const generateTimetable = () => {
                 break;
             }
         }
+            */
 
     //2.1:  clean-up active days
 
         activeDays = 0;
         for (let i = 0; i < 5; i++) {
-            if (dayOccupied[i]) {
-                activeDays++
+            if (dayOccupied[i] != false) {
+                activeDays++;
             }
         }
     //2.1.1 : resorting
@@ -184,6 +193,7 @@ const generateTimetable = () => {
     // Step 4: Brute force
     let currentBestTS = [];
     let currentBestTD = [];
+    let currentBestTotalStartTimePeriod = 100;
     let currentBestDays = 8;
 
     
@@ -191,18 +201,32 @@ const generateTimetable = () => {
 
     const slave = (lessons, dayOccupied, lunchRemaining) => {
         let totalDays = 0;
+        let totalStartTimePeriod = 0;
         dayOccupied.forEach(truthy => { 
-            if (truthy) {
+            if (truthy !== false) {
                 totalDays++;
+                totalStartTimePeriod = totalStartTimePeriod + truthy;
             }
         })
-        if (totalDays >= currentBestDays) { // can never be better than best skip to save time
+        if (totalDays > currentBestDays) { // can never be better than best skip to save time
             return;
-        } 
+        }
+        
         if (lessons.length == 0) { // ended
+            if (totalDays < currentBestDays) {
+                currentBestTS = [...timetableSummary];
+                currentBestTD = [...timetableDetailed]; // max 5 times
+                currentBestDays = totalDays;
+                currentBestTotalStartTimePeriod = totalStartTimePeriod;
+                return;
+            }
+            if (totalDays == currentBestDays && totalStartTimePeriod < currentBestTotalStartTimePeriod) {
+                return;
+            }
             currentBestTS = [...timetableSummary];
             currentBestTD = [...timetableDetailed]; // max 5 times
             currentBestDays = totalDays;
+            currentBestTotalStartTimePeriod = totalStartTimePeriod;
             return;
         }
 
@@ -443,7 +467,12 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
 
         if (success) {
             if (newLessonSkip == 'Live' || newLessonSkip == 'JoinAny'){
-                dayOccupied[dayToAdd] = true;
+                if (dayOccupied[dayToAdd] === false) {
+                    dayOccupied[dayToAdd] = timeSlot%13;
+                } else {
+                    dayOccupied = Math.min(dayOccupied,timeSlot%13);
+                }
+                
             }
             return true;
         } else {
@@ -464,15 +493,23 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
 
     const firstPeriod = newLessonSkip; // first period is always new Lesson Skip
     //console.log(firstPeriod);
-    const secondPeriod = newLessonLength == 2 
-        ? newLessonSkip //length 2 will be same as first period
-        : newLessonSkip == 'Recorded'
-        ? null // reccorded means nothing next
-        : !CustomList.travel
-        ? null // no travel means no need care travel
-        : newTimetable.location == 'COM' 
-        ? 'TravelOut'
-        : 'TravelBack' // assuming people won't go e learning lecture.
+    let secondPeriod;
+
+    if (newLessonLength == 2) {
+        secondPeriod = newLessonSkip;
+    } else if (newLessonSkip == 'Recorded') {
+        secondPeriod = null;
+    } else if (CustomList.travel == 'false') {
+        secondPeriod = null;
+    } else if (newTimetable.location == 'COM') {
+        secondPeriod = 'TravelOut';
+    } else {
+        secondPeriod = 'TravelBack';
+    }
+
+    //console.log(CustomList.travel);
+    //console.log(secondPeriod);
+
 
     
 
@@ -487,7 +524,11 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
 
     if (helper(secondPeriod,timeSlot+1,next,nextDet)) {
         if (newLessonSkip == 'Live' || newLessonSkip == 'JoinAny'){
-            dayOccupied[dayToAdd] = true;
+            if(dayOccupied[dayToAdd] == false) {
+                dayOccupied[dayToAdd] = timeSlot%13;
+            } else {
+                dayOccupied[dayToAdd] = Math.min(timeSlot%13,dayOccupied[dayToAdd])
+            }
         }
         return true;
     } else {
