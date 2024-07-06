@@ -243,7 +243,43 @@ const generateTimetable = () => {
                     continue;
                 }
             }
-        } else {
+        } else {  // lesson type = 1
+            for (let i = 0; i < lesson.timetable.length; i++) {
+                const added = lesson.timetable[i];
+                let shouldContinue = false;
+
+                added.timetable.forEach((timeSlot) => {
+                    if (lesson.skip !== 'Recorded' && timeSlot.period % 13 < firstPeriod) {
+                        shouldContinue = true;
+                        return;  // Continue the forEach loop
+                    }
+                });
+
+                if (shouldContinue) {
+                    continue;  // Continue the outer loop
+                }
+                const archivedLunchRemaining = [...lunchRemaining];
+                const archivedDayOccupied = [...dayOccupied];
+                const archivedTimetableDetailed = [...timetableDetailed];
+                const archivedTimetableSummary = [...timetableSummary];
+                if (tryToAddOne(added,lesson.moduleCode,lesson.lessonType,lesson.skip,timetableDetailed,timetableSummary,lunchRemaining,dayOccupied)) {
+                    //success then recursively calls
+                    slave(lessons,dayOccupied,lunchRemaining);
+                    // then reset back
+                    for (let i = 0; i < 65; i++) {   //reset
+                        timetableDetailed[i] = archivedTimetableDetailed[i];
+                        timetableSummary[i] =archivedTimetableSummary[i];
+                    }
+                    for (let i = 0; i <= 4; i++) {
+                        lunchRemaining[i] = archivedLunchRemaining[i];
+                        dayOccupied[i] = archivedDayOccupied[i];
+                    }
+                    //and continue
+                } else {
+                    continue;
+                }
+
+            }
 
         }
         lessons.push(lesson);
