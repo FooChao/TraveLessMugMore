@@ -18,7 +18,7 @@ const generateTimetable = () => {
         const timetableDetailed = []; // diff from imported
         const timetableSummary = [];  // diff from imported
         const dayOccupied = [false,false,false,false,false]; //keep check of occupied days
-        const activeDays = 0;
+        let activeDays = 0;
         const lunchRemaining = [1,1,1,1,1];
         const lessons = []; //lessons remaining will push in step 0.2
 
@@ -122,39 +122,152 @@ const generateTimetable = () => {
         //console.log(lessons);
 
 
-        //Step 2 : handling priortiy 1 - Blocking out the one day onto the list
-            for (let i = lessons.length - 1; i >= 0 ; i--) {
-                const lesson = lessons[i];
-                if (lesson.priority <= 1) {
-                    //console.log(lesson);
-                    if (lesson.type == 0){
-                        // loop through lesson.days to find the day and block
-                        for (let j = 0; j < 5; j++) {
-                            //console.log(lesson.days[j]);
-                            if (lesson.days[j]) {
-                                //console.log(j);
-                                dayOccupied[j] = true;
-                                break;
-                            }
+    //Step 2 : handling priortiy 1 - Blocking out the one day onto the list
+
+    //2.0 blocking
+
+        for (let i = lessons.length - 1; i >= 0 ; i--) {
+            const lesson = lessons[i];
+            if (lesson.priority <= 1) {
+                //console.log(lesson);
+                if (lesson.type == 0){
+                    // loop through lesson.days to find the day and block
+                    for (let j = 0; j < 5; j++) {
+                        //console.log(lesson.days[j]);
+                        if (lesson.days[j]) {
+                            //console.log(j);
+                            dayOccupied[j] = true;
+                            break;
                         }
-                        lesson.priority = 4; // change its priority will resort later
-                    } else {
-                        lesson.priotity = 3; // technically shouldn't happen as type 1 lesson won't be priority 1
-                    }  
-                    
+                    }
+                    lesson.priority = 4; // change its priority will resort later
                 } else {
-                    break;
+                    lesson.priotity = 3; // technically shouldn't happen as type 1 lesson won't be priority 1
+                }  
+                    
+            } else {
+                break;
+            }
+        }
+
+    //2.1:  clean-up active days
+
+        activeDays = 0;
+        for (let i = 0; i < 5; i++) {
+            if (dayOccupied[i]) {
+                activeDays++
+            }
+        }
+    //2.1.1 : resorting
+
+        //lessons.sort((a,b) => b.priority - a.priority);        
+        
+
+    //Step 3 : handling recorded -> decided to ditch orignial plan so change them all to priority 3/4
+
+    for (let i = lessons.length - 1; i >= 0 ; i--) {
+        const lesson = lessons[i];
+        if (lesson.priority >2) {  //useless throw away
+            break;
+        } else { //loop through timetable find selected one                 
+            if (lesson.type == 1) {
+                lesson.priortiy = 3;
+            } else {
+                lesson.priortiy =4;
+            }                        
+        } 
+    }
+
+    lessons.sort((a,b) => b.priority - a.priority); //resort
+
+
+    // Step 4: Brute force
+    let currentBestTS = [];
+    let currentBestTD = [];
+    let currentBestDays = 8;
+
+    
+    
+
+    const slave = (lessons, dayOccupied, lunchRemaining) => {
+        let totalDays = 0;
+        dayOccupied.forEach(truthy => { 
+            if (truthy) {
+                totalDays++;
+            }
+        })
+        if (totalDays >= currentBestDays) { // can never be better than best skip to save time
+            return;
+        } 
+        if (lessons.length == 0) { // ended
+            currentBestTS = [...timetableSummary];
+            currentBestTD = [...timetableDetailed]; // max 5 times
+            currentBestDays = totalDays;
+            return;
+        }
+
+        
+        const lesson = lessons.pop();
+        //console.log(lesson);
+        if (lesson.type == 0) {
+            for (let i = 0; i < lesson.timetable.length; i++) {
+                const added = lesson.timetable[i];
+                const timeSlot = added.period;
+                if (lesson.skip != 'Recorded' && added.period%13 < firstPeriod){  // means live but earlier than first accepted school hours
+                    continue;
+                }
+                const archivedLunchRemaining = [...lunchRemaining];
+                const archivedDayOccupied = [...dayOccupied];
+                const archivedTimetableDetailed = [];
+                const archivedTimetableSummary = [];
+                const endpoint = Math.max(lesson.length,2);
+                for (let i = 0; i < endpoint; i++) {
+                    archivedTimetableDetailed[i] = timetableDetailed[i+timeSlot];
+                    archivedTimetableSummary[i] = timetableSummary[i+timeSlot];                
+                }
+
+                if (tryToAddZero(added,lesson.moduleCode,lesson.lessonType,lesson.skip,lesson.length,timetableDetailed,timetableSummary,lunchRemaining,dayOccupied)) {
+                    //success then recursively calls
+                    slave(lessons,dayOccupied,lunchRemaining);
+                    // then reset back
+                    for (let i = 0; i < endpoint; i++) {   //reset
+                        timetableDetailed[i+timeSlot] = archivedTimetableDetailed[i];
+                        timetableSummary[i+timeSlot] =archivedTimetableSummary[i];
+                    }
+                    for (let i = 0; i <= 4; i++) {
+                        lunchRemaining[i] = archivedLunchRemaining[i];
+                        dayOccupied[i] = archivedDayOccupied[i];
+                    }
+                    //and continue
+                } else {
+                    continue;
                 }
             }
+        } else {
 
-        
+        }
+        lessons.push(lesson);
         
 
-        console.log(lessons);  //reference
+    }
+
+    slave(lessons,dayOccupied, lunchRemaining);
+
+    //console.log(currentBestTD);
+    //console.log(currentBestTS);
+
+    for (let i = 0 ; i < 65; i++) {
+        timetableDetailed[i] = currentBestTD[i];
+        timetableSummary[i] = currentBestTS[i];
+    }
+
+    
+
+        //console.log(lessons);  //reference
         TimetableDetailed[0] = timetableDetailed;
         TimetableSummary[0] = timetableSummary;
-        console.log(dayOccupied);
-        console.log(lunchRemaining);
+        //console.log(dayOccupied);
+        //console.log(lunchRemaining);
         
 
 
@@ -277,9 +390,44 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
     const next = timetableSummary[timeSlot+1];
     const nextDet = timetableDetailed[timeSlot+1];
     const dayToAdd = Math.floor(timeSlot/13);
+    let lunchConsumed = false; // if consumed in firstPeriod add it back if needed
+
+    //handle edge case first
+    if (newLessonLength > 2) {
+        const archivedLunchRemaining = [...lunchRemaining];
+        const archivedTimetableDetailed = [];
+        const archivedTimetableSummary = [];
+        let success = true;
+
+        for (let i = 0; i < newLessonLength; i++) {
+            archivedTimetableDetailed[i] = timetableDetailed[i+timeSlot];
+            archivedTimetableSummary[i] = timetableSummary[i+timeSlot];
+            success = success && helper(newLessonSkip,i+timeSlot,timetableSummary[i+timeSlot],timetableDetailed[i+timeSlot]); //try add all
+        }
+
+        if (success) {
+            if (newLessonSkip == 'Live' || newLessonSkip == 'JoinAny'){
+                dayOccupied[dayToAdd] = true;
+            }
+            return true;
+        } else {
+            for (let i = 0; i < newLessonLength; i++) {   //reset
+                timetableDetailed[i+timeSlot] = archivedTimetableDetailed[i];
+                timetableSummary[i+timeSlot] =archivedTimetableSummary[i];
+            }
+            for (let i = 0; i <= 4; i++) {
+                lunchRemaining[i] = archivedLunchRemaining[i];
+                
+            }
+            return false;    
+
+        }
+
+        
+    }
 
     const firstPeriod = newLessonSkip; // first period is always new Lesson Skip
-    console.log(firstPeriod);
+    //console.log(firstPeriod);
     const secondPeriod = newLessonLength == 2 
         ? newLessonSkip //length 2 will be same as first period
         : newLessonSkip == 'Recorded'
@@ -290,7 +438,7 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
         ? 'TravelOut'
         : 'TravelBack' // assuming people won't go e learning lecture.
 
-    let lunchConsumed = false; // if consumed in firstPeriod add it back if needed
+    
 
     const success = helper(firstPeriod,timeSlot,incumbent,incumbentDet);
     if (!success) {
@@ -588,6 +736,8 @@ const tryToAddOne = (newTimetable,newModuleCode,newLessonType,newLessonSkip,time
     let allSucceed = true;
     const archivedTimetableDetailed = [...timetableDetailed];
     const archivedTimetableSummary = [...timetableSummary];
+    const archivedLunchRemaining = [...lunchRemaining];
+    const archivedDayOccupied = [...dayOccupied];
     newTimetable.timetable.forEach((needed) => {
         allSucceed = allSucceed && tryToAddZero(needed,newModuleCode,newLessonType,newLessonSkip,needed.length,timetableDetailed,timetableSummary,lunchRemaining,dayOccupied);
     })
@@ -597,6 +747,10 @@ const tryToAddOne = (newTimetable,newModuleCode,newLessonType,newLessonSkip,time
         for (let i = 0; i <= 64; i++) {
             timetableDetailed[i] = archivedTimetableDetailed[i];
             timetableSummary[i] = archivedTimetableSummary[i];
+        }
+        for (let i = 0; i <= 4; i++) {
+            lunchRemaining[i] = archivedLunchRemaining[i];
+            dayOccupied[i] = archivedDayOccupied[i];
         }
         return false;
     }
