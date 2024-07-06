@@ -70,7 +70,7 @@ const generateTimetable = () => {
         
 
         lessons.forEach((element) => {
-            console.log(element);
+            //console.log(element);
             zeroUpdateDataOverall(element);
         });
 
@@ -82,7 +82,7 @@ const generateTimetable = () => {
 
 
 
-    //Step 1 : handling priority 0 and priority -1
+    //Step 1 : handling priority 0 and priority -1 (only 1 or 0 option)
         console.log(lessons);
 
         for (let i = lessons.length - 1; i >= 0 ; i--) {
@@ -118,6 +118,36 @@ const generateTimetable = () => {
                 break;
             }
         }
+
+        //console.log(lessons);
+
+
+        //Step 2 : handling priortiy 1 - Blocking out the one day onto the list
+            for (let i = lessons.length - 1; i >= 0 ; i--) {
+                const lesson = lessons[i];
+                if (lesson.priority <= 1) {
+                    //console.log(lesson);
+                    if (lesson.type == 0){
+                        // loop through lesson.days to find the day and block
+                        for (let j = 0; j < 5; j++) {
+                            //console.log(lesson.days[j]);
+                            if (lesson.days[j]) {
+                                //console.log(j);
+                                dayOccupied[j] = true;
+                                break;
+                            }
+                        }
+                        lesson.priority = 4; // change its priority will resort later
+                    } else {
+                        lesson.priotity = 3; // technically shouldn't happen as type 1 lesson won't be priority 1
+                    }  
+                    
+                } else {
+                    break;
+                }
+            }
+
+        
         
 
         console.log(lessons);  //reference
