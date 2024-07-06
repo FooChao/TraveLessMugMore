@@ -137,8 +137,8 @@ const helperNormal = (timetable, moduleCode) => {
     for (let timeSlot of timetable) {
         //find its period/location/day
         const day = helperDay(timeSlot.day);
-        const slot = day * 13
-            + parseInt(timeSlot.startTime)/100 - 8;
+        const slot = Math.floor(day * 13
+            + parseInt(timeSlot.startTime)/100 - 8);
         const location = helperVenue(timeSlot.venue);
         //if slot not considered
         if (period[slot] == undefined) {
@@ -291,8 +291,9 @@ const helperSpecialOption = ((timetable) => {
         const location = helperVenue(element.venue);
         const day = helperDay(element.day);
         //console.log(day);
-        const timeSlot = day * 13
-            + parseInt(element.startTime)/100 - 8;
+        const timeSlot = Math.floor(day * 13
+            + parseInt(element.startTime)/100 - 8);
+        console.log(timeSlot);
         const object = {
             length : length,
             period : timeSlot,
