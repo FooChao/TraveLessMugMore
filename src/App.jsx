@@ -15,8 +15,8 @@ if (localStorage.getItem('CustomList') === null) {
     lunchStart: 12,
     lunchEnd: 16,
     travel: 'true',
-    year: '2023-2024',
-    semester: '2'
+    year: '2024-2025',
+    semester: '1'
   };
 } else {
   CustomList = JSON.parse(localStorage.getItem('CustomList'));
