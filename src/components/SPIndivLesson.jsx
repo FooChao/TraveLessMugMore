@@ -11,7 +11,7 @@ const SPIndivLesson = ({indiv}) => {
         setIncluded(truthy);
         indiv.included = truthy;
         localStorage.setItem('LessonsList', JSON.stringify(LessonsList));
-        console.log(LessonsList);
+        //console.log(LessonsList);
     }
 
     const nonBreakingSpace = `\u00A0`;

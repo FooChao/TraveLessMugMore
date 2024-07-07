@@ -404,7 +404,7 @@ const zeroUpdateDataZero = (lesson) => {
         
     });
 
-    console.log(options);
+    //console.log(options);
     
     if (options == 0) {
         //nothing included

@@ -14,9 +14,9 @@ const lessonRefresher = () => {
   // If updateLessonsFunction is set, use it to update lessons
   //console.log('hi');
   if (updateLessonsFunction) {
-    console.log('bye');
+    //console.log('bye');
     updateLessonsFunction(LessonsList);
-    console.log(LessonsList);
+    //console.log(LessonsList);
   }
 };
 

@@ -12,7 +12,7 @@ const IndivLesson = ({indiv,length}) => {
         setIncluded(truthy);
         indiv.included = truthy;
         localStorage.setItem('LessonsList', JSON.stringify(LessonsList));
-        console.log(LessonsList);
+        //console.log(LessonsList);
     }
     //console.log(indiv);
     //console.log(length);

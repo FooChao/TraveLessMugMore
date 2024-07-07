@@ -38,7 +38,7 @@ const ToolsPage = () => {
           if (
               (LessonsList[i].examStart < LessonsList[j].examEnd && LessonsList[i].examEnd > LessonsList[j].examStart)
           ) {
-              console.log(`Clash detected between exam ${LessonsList[i].moduleCode} and exam ${LessonsList[i].moduleCode}`);
+              //console.log(`Clash detected between exam ${LessonsList[i].moduleCode} and exam ${LessonsList[i].moduleCode}`);
               setExamClash(`Exam Clash : ${LessonsList[i].moduleCode} and ${LessonsList[i].moduleCode}`); // Return true if a clash is found
               clash = true;
           }
@@ -159,6 +159,7 @@ const ToolsPage = () => {
     
       } catch (error) {
         console.log('Error', error);
+        alert('Double check your module code!');
       } finally {
         document.getElementById('modulesAdded').value = '';
       }

@@ -14,7 +14,7 @@ const ToolsTitle = () => {
         event.preventDefault();
         const code = document.getElementById('modulesAdded').value.toUpperCase();
         
-        console.log(code);
+        //console.log(code);
         let needed = null;
 
         const fetchJobs = async () => {
@@ -43,9 +43,9 @@ const ToolsTitle = () => {
                 //console.log(needed);
 
             } catch (error) {
-                console.log('Error', error);
+                //console.log('Error', error);
             } finally {
-                console.log(needed);
+                //console.log(needed);
             }
         }
 
