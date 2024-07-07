@@ -6,7 +6,9 @@ const handleData = (moduleData) => {
     let timetable = moduleData.timetable;
     let saved = {
         moduleCode : moduleData.moduleCode,
-        arrOflesson : []
+        arrOflesson : [],
+        examStart : moduleData.examStart,
+        examEnd: moduleData.examEnd
     }
 
     //console.log('here');
@@ -27,13 +29,13 @@ const handleData = (moduleData) => {
         timetable = timetable.filter(lesson => lesson.lessonType != lessonType);
     }
 
-    console.log(saved);
+    //console.log(saved);
 
     LessonsList.push(saved);
 
     //console.log(LessonsList);
 
-    lessonRefresher();
+    //lessonRefresher();
     
 
 }
@@ -293,7 +295,7 @@ const helperSpecialOption = ((timetable) => {
         //console.log(day);
         const timeSlot = Math.floor(day * 13
             + parseInt(element.startTime)/100 - 8);
-        console.log(timeSlot);
+        //console.log(timeSlot);
         const object = {
             length : length,
             period : timeSlot,

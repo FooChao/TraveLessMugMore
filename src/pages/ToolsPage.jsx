@@ -6,6 +6,18 @@ import Module from '../components/Module';
 import { useNavigate } from 'react-router-dom';
 import Timetable from '../components/Timetable';
 
+let updateLessonsFunction = null;
+
+const lessonRefresher = () => {
+  // If updateLessonsFunction is set, use it to update lessons
+  //console.log('hi');
+  if (updateLessonsFunction) {
+    //console.log('bye');
+    updateLessonsFunction();
+    //console.log(LessonsList);
+  }
+};
+
 const ToolsPage = () => {
 
   //set-up navigate
@@ -16,9 +28,24 @@ const ToolsPage = () => {
   const [lessons, updateLessons] = useState([]);
 
   //
+  /*
   useEffect(() => {    
     updateLessons(LessonsList);
     return;    
+  }, []);
+  */
+
+  useEffect(() => {
+    // Initialize the lessons state with LessonsList
+    updateLessons([...LessonsList]);
+    // Set the global updateLessonsFunction to the local updateLessons function
+    updateLessonsFunction = () => updateLessons([...LessonsList]);
+
+    // Cleanup function to reset updateLessonsFunction on unmount
+    return   () => {
+      updateLessonsFunction = null;
+    };
+    
   }, []);
 
 
@@ -28,48 +55,66 @@ const ToolsPage = () => {
     event.preventDefault();
     const code = document.getElementById('modulesAdded').value.toUpperCase();
         
-    console.log(code);
+    //console.log(code);
     let needed = null;
 
     const fetchJobs = async () => {
-      try {                
+      try {
         const res = await fetch(`https://api.nusmods.com/v2/${CustomList.year}/modules/${code}.json`);
         const data = await res.json();
-        needed = data.semesterData
-          .map(semester => ({
-              moduleCode : code,
+    
+        const needed = data.semesterData
+          .map(semester => {
+            const timetable = semester.timetable;
+            const examStart = semester.examDate ? new Date(semester.examDate) : null;
+            const examDuration = semester.examDuration ? semester.examDuration : null;
+    
+            // Compute examEnd
+            const examEnd = examStart && examDuration 
+              ? new Date(examStart.getTime() + examDuration * 60000) 
+              : null;
+    
+            return {
+              moduleCode: code,
               semester: semester.semester,
-              timetable : semester.timetable
-          }))
+              timetable: timetable,
+              examStart: examStart,
+              examEnd: examEnd,
+            };
+          })
           .filter(item => item.semester == CustomList.semester)[0];
-          needed.timetable.sort(
-            (first,second) => first.lessonType == second.lessonType 
-                ? first.classNo.localeCompare(second.classNo)
-                : first.lessonType.localeCompare(second.lessonType)
-            );
+    
+        // Sort timetable
+        needed.timetable.sort(
+          (first, second) => first.lessonType === second.lessonType 
+            ? first.classNo.localeCompare(second.classNo)
+            : first.lessonType.localeCompare(second.lessonType)
+        );
+    
+        // Handle the sorted timetable and exam dates
+        handleData(needed);
+    
+        // Update local storage and lessons list
 
-          handleData(needed); 
-
-
-
-          localStorage.setItem('LessonsList', JSON.stringify(LessonsList));
-            
-          updateLessons([...LessonsList]);
-
-          
-          
-             
-
+        
+        //console.log(LessonsList);
+        updateLessons([...LessonsList]);
+        //console.log(lessons);
+        localStorage.setItem('LessonsList', JSON.stringify(LessonsList));
+        
+        
+        //updateLessons([...LessonsList]);
+        
+    
       } catch (error) {
         console.log('Error', error);
       } finally {
-        //console.log(lessons);
+        document.getElementById('modulesAdded').value = '';
       }
-      
-      
     }
-        
+    //console.log(LessonsList);
     fetchJobs();
+    //console.log(LessonsList);   
     document.getElementById('modulesAdded').value ='';  
       
      
@@ -105,4 +150,4 @@ const ToolsPage = () => {
 
 }
 
-export default ToolsPage;
+export { ToolsPage as default, lessonRefresher };

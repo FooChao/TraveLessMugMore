@@ -17,7 +17,7 @@ const ModuleLessonType = ({lesson}) => {
     const setRecorded = () => {
         setSkip("Recorded");
         lesson.skip = "Recorded";
-        console.log('hi');
+        //console.log('hi');
         localStorage.setItem('LessonsList', JSON.stringify(LessonsList));
         
     }
