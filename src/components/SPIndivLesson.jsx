@@ -2,6 +2,7 @@ import React from 'react'
 import { useState } from 'react';
 import periodToTime from '../functions/periodToTime';
 import periodToTimeDouble from '../functions/periosToTimeDouble';
+import { LessonsList } from '../App';
 
 const SPIndivLesson = ({indiv}) => {
     console.log(indiv);
@@ -9,6 +10,7 @@ const SPIndivLesson = ({indiv}) => {
     const adjust = (truthy) => {
         setIncluded(truthy);
         indiv.included = truthy;
+        localStorage.setItem('LessonsList', JSON.stringify(LessonsList));
     }
 
     const nonBreakingSpace = `\u00A0`;

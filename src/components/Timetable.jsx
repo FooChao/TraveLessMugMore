@@ -50,6 +50,8 @@ const Timetable = () => {
       const loadTimetable = () => {
         generateTimetable();
         setTable([TimetableSummary[0],TimetableDetailed[0]]);
+        localStorage.setItem('TimetableSummary', JSON.stringify(TimetableSummary));
+        localStorage.setItem('TimetableDetailed', JSON.stringify(TimetableDetailed));
       }
 
 

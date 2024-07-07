@@ -50,15 +50,12 @@ const ToolsPage = () => {
 
           handleData(needed); 
 
-          //bug here
-          //does not update when clicked
 
-          //updateLessons([]);
+
+          localStorage.setItem('LessonsList', JSON.stringify(LessonsList));
             
           updateLessons([...LessonsList]);
 
-          //bug here
-          //does not update when clicked
           
           
              

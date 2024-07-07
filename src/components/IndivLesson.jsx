@@ -2,6 +2,7 @@ import React from 'react'
 import { useState } from 'react'
 import periodToTime from '../functions/periodToTime';
 import periodToTimeDouble from '../functions/periosToTimeDouble';
+import { LessonsList } from '../App';
 
 const IndivLesson = ({indiv,length}) => {
     //console.log(indiv);
@@ -10,6 +11,7 @@ const IndivLesson = ({indiv,length}) => {
     const adjust = (truthy) => {
         setIncluded(truthy);
         indiv.included = truthy;
+        localStorage.setItem('LessonsList', JSON.stringify(LessonsList));
     }
     //console.log(indiv);
     //console.log(length);

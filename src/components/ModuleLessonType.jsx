@@ -2,6 +2,7 @@ import React from 'react'
 import { useState } from 'react';
 import IndivLesson from './IndivLesson';
 import SPIndivLesson from './SPIndivLesson';
+import { LessonsList } from '../App';
 
 const ModuleLessonType = ({lesson}) => {
     const [skip, setSkip] = useState(lesson.skip);
@@ -10,17 +11,21 @@ const ModuleLessonType = ({lesson}) => {
     const setLive = () => {
         setSkip("Live");
         lesson.skip = "Live";
+        localStorage.setItem('LessonsList', JSON.stringify(LessonsList));
     }
 
     const setRecorded = () => {
         setSkip("Recorded");
         lesson.skip = "Recorded";
+        console.log('hi');
+        localStorage.setItem('LessonsList', JSON.stringify(LessonsList));
         
     }
 
     const setJoinAny = () => {
         setSkip("JoinAny");
         lesson.skip = "JoinAny";
+        localStorage.setItem('LessonsList', JSON.stringify(LessonsList));
     }
 
     const adjustHidden = () => {

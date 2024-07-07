@@ -18,6 +18,8 @@ const Module = ({lesson}) => {
           LessonsList.splice(i,1);
         }
       }
+
+      localStorage.setItem('LessonsList', JSON.stringify(LessonsList));
     }
 
   return (

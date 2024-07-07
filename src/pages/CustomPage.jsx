@@ -23,7 +23,8 @@ const CustomPage = () => {
         CustomList.semester = document.getElementById('semester').value;
         CustomList.year = document.getElementById('acadYear').value;
         setSaved(true);
-        console.log(CustomList);
+        localStorage.setItem('CustomList', JSON.stringify(CustomList));
+        //console.log(CustomList);
     }
 
     return (
