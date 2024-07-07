@@ -235,7 +235,11 @@ const generateTimetable = () => {
         //console.log(lesson);
         if (lesson.type == 0) {
             for (let i = 0; i < lesson.timetable.length; i++) {
+                
                 const added = lesson.timetable[i];
+                if(added.included === false) {
+                    continue;
+                }
                 const timeSlot = added.period;
                 if (lesson.skip != 'Recorded' && added.period%13 < firstPeriod){  // means live but earlier than first accepted school hours
                     continue;
@@ -271,6 +275,10 @@ const generateTimetable = () => {
             for (let i = 0; i < lesson.timetable.length; i++) {
                 const added = lesson.timetable[i];
                 let shouldContinue = false;
+
+                if(added.included === false) {
+                    continue;
+                }
 
                 added.timetable.forEach((timeSlot) => {
                     if (lesson.skip !== 'Recorded' && timeSlot.period % 13 < firstPeriod) {
@@ -393,7 +401,10 @@ const zeroUpdateDataZero = (lesson) => {
             }
             // else do absolutely nothing
         }
+        
     });
+
+    console.log(options);
     
     if (options == 0) {
         //nothing included
