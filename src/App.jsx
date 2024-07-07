@@ -27,6 +27,11 @@ if (localStorage.getItem('LessonsList') === null) {
   LessonsList = [];
 } else {
   LessonsList = JSON.parse(localStorage.getItem('LessonsList'));
+  for (let i =0 ; i < LessonsList.length; i++) {
+    LessonsList[i].examStart = new Date(LessonsList[i].examStart);
+    LessonsList[i].examEnd = new Date(LessonsList[i].examEnd);
+
+  }
 }
 
 let TimetableSummary;

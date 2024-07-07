@@ -27,6 +27,30 @@ const ToolsPage = () => {
   //define lessons for modules
   const [lessons, updateLessons] = useState([]);
 
+  //define exam clashes
+
+  const [examClash, setExamClash] = useState('NA');
+
+  const checkForClash = () => {
+    let clash = false;
+    for (let i = 0; i < LessonsList.length; i++) {
+      for (let j = i + 1; j < LessonsList.length; j++) {
+          if (
+              (LessonsList[i].examStart < LessonsList[j].examEnd && LessonsList[i].examEnd > LessonsList[j].examStart)
+          ) {
+              console.log(`Clash detected between exam ${LessonsList[i].moduleCode} and exam ${LessonsList[i].moduleCode}`);
+              setExamClash(`Exam Clash : ${LessonsList[i].moduleCode} and ${LessonsList[i].moduleCode}`); // Return true if a clash is found
+              clash = true;
+          }
+      }
+    }
+    if (!clash) {
+      console.log('no clash');
+      setExamClash('NA'); // Return false if no clashes are found
+    }
+    
+  }
+
   //
   /*
   useEffect(() => {    
@@ -38,8 +62,12 @@ const ToolsPage = () => {
   useEffect(() => {
     // Initialize the lessons state with LessonsList
     updateLessons([...LessonsList]);
+    checkForClash();
     // Set the global updateLessonsFunction to the local updateLessons function
-    updateLessonsFunction = () => updateLessons([...LessonsList]);
+    updateLessonsFunction = () =>{
+      updateLessons([...LessonsList]);
+      checkForClash();
+    } 
 
     // Cleanup function to reset updateLessonsFunction on unmount
     return   () => {
@@ -99,7 +127,8 @@ const ToolsPage = () => {
         
         //console.log(LessonsList);
         updateLessons([...LessonsList]);
-        //console.log(lessons);
+        console.log(LessonsList);
+        checkForClash();
         localStorage.setItem('LessonsList', JSON.stringify(LessonsList));
         
         
@@ -115,6 +144,7 @@ const ToolsPage = () => {
     //console.log(LessonsList);
     fetchJobs();
     //console.log(LessonsList);   
+    
     document.getElementById('modulesAdded').value ='';  
       
      
@@ -127,6 +157,10 @@ const ToolsPage = () => {
 
   return (
     <div id = "tools" className="container flex flex-col justify-between mx-auto p-0 py-1">
+      <form className={examClash === 'NA' ? "hidden flex items-center justify-between bg-red-500 mb-3 mx-0 px-0 text-3xl font-bold text-center" 
+        : "flex items-center justify-between bg-red-500 mb-3 mx-0 px-0 text-3xl font-bold text-center"}>
+        {examClash}
+      </form>
       <form className="flex items-center justify-between bg-green-400 mb-3 mx-0 px-0" onSubmit={addModules}>
         <h1 className="ml-3 text-3xl font-bold"> Modules</h1>
         <div className="float-right">
