@@ -9,7 +9,7 @@ const Home = () => {
                 About this Website
             </h1>
             <p className="text-lg pb-20">
-                This website is made to generate reccomended timetable for NUS SOC students who do not stay in campus. The generated timetable will minimise the amount of days students need to travel to school. It also takes into consideration lunch time and travelling between venues (for now it only accounts for travelling time to and fro Soc).
+                This website is made to generate reccomended timetable for NUS SOC students who do not stay in campus. The generated timetable will minimise the amount of days students need to travel to school.It also tries to delay the first live lesson time without compromising the days in school. It also takes into consideration lunch time and travelling between venues (for now it only accounts for travelling time to and fro Soc).
             </p>
 
             <h1 className="text-3xl underline pb-3">
@@ -38,7 +38,19 @@ const Home = () => {
                 About Custom
             </h1>
             <p className="text-lg pb-20">
-                Customise your lunch time range and whether you want travelling/lunch time to be considered.
+                Customise your lunch time range/school starting time and whether you want travelling/lunch time to be considered.
+            </p>
+            <h1 className="text-3xl underline pb-3">
+                Other Important Things To Know
+            </h1>
+            <p className="text-lg pb-5">
+                Venues included in COM are any venues starting with 'COM' , 'LT16', 'LT17', 'LT18' and 'LT19'. These venues are closed to each other and we will be able to move around each place quickly. Travelling within these benues won't be considered.
+            </p>
+            <p className="text-lg pb-5">
+                For lessons which starts at middle of period, its period will be rounded down hence potentially causing misleading timing eg. 30 min earlier than what it is.
+            </p>
+            <p className="text-lg pb-20">
+                For lessons at which NUSMod cramped all as lecture (such as CS2103T where all is categorised as lecture), keyed in module code with a '.' before it at which all lessons with venues with LT and AUD in it will be categorised at others. This will allow you to set the legit lecture to recorded.
             </p>
         </div>
     </div>
