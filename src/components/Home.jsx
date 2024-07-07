@@ -9,7 +9,7 @@ const Home = () => {
                 About this Website
             </h1>
             <p className="text-lg pb-20">
-                This website is made to generate reccomended timetable for NUS SOC students who do not stay in campus by fetching APIs from NUSmods API hence its data will be same as that of NUSmod.(Please do not randomly spam add modules for no reason in case it crash NUSmod and get me into trouble.Use responsibly) The generated timetable will minimise the amount of days students need to travel to school.It also tries to delay the first live lesson time without compromising the days in school. It also takes into consideration lunch time and travelling between venues (for now it only accounts for travelling time to and fro Soc).
+                This website is made to generate reccomended timetable for NUS SOC students who do not stay in campus by fetching APIs from NUSmods API to get the data and test all possible permutations to achieve most optimal timetable.(Please do not randomly spam add modules for no reason in case it crash NUSmod and get me into trouble.Use responsibly) The generated timetable will minimise the amount of days students need to travel to school.It also tries to delay the first live lesson time without compromising the days in school. It also takes into consideration lunch time and travelling between venues (for now it only accounts for travelling time to and fro Soc).
             </p>
 
             <h1 className="text-3xl underline pb-3">
