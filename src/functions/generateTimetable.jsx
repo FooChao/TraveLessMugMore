@@ -8,7 +8,7 @@ import { CustomList } from '../App';
 
 const generateTimetable = () => {
 
-    console.log(LessonsList);
+    //console.log(LessonsList);
   
     
     //step 0 : preprocessing datas
@@ -89,7 +89,7 @@ const generateTimetable = () => {
 
 
     //Step 1 : handling priority 0 and priority -1 (only 1 or 0 option)
-        console.log(lessons);
+        //console.log(lessons);
 
         for (let i = lessons.length - 1; i >= 0 ; i--) {
             const lesson = lessons[i];

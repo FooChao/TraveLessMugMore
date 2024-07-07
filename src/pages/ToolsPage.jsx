@@ -45,7 +45,7 @@ const ToolsPage = () => {
       }
     }
     if (!clash) {
-      console.log('no clash');
+      //console.log('no clash');
       setExamClash('NA'); // Return false if no clashes are found
     }
     
@@ -81,7 +81,14 @@ const ToolsPage = () => {
 
   const addModules = async (event) => {
     event.preventDefault();
-    const code = document.getElementById('modulesAdded').value.toUpperCase();
+    let code = document.getElementById('modulesAdded').value.toUpperCase();
+
+    let specialTreatment = false;
+
+    if (code.charAt(0) === '.') {   // to detect need for special treatment
+        code  = code.slice(1);
+        specialTreatment = true;
+    }
         
     //console.log(code);
     let needed = null;
@@ -111,6 +118,21 @@ const ToolsPage = () => {
             };
           })
           .filter(item => item.semester == CustomList.semester)[0];
+
+          //console.log(needed);
+
+          if (specialTreatment === true) {
+            //console.log('hi');
+            needed.timetable.forEach((lesson) => {
+              //console.log(lesson.venue);
+              if(lesson.venue.includes('LT') || lesson.venue.includes('AUD')) {
+                lesson.lessonType = 'Others';                
+              }
+              return;
+            })
+          }
+
+          //console.log(needed);
     
         // Sort timetable
         needed.timetable.sort(
@@ -127,7 +149,7 @@ const ToolsPage = () => {
         
         //console.log(LessonsList);
         updateLessons([...LessonsList]);
-        console.log(LessonsList);
+        //console.log(LessonsList);
         checkForClash();
         localStorage.setItem('LessonsList', JSON.stringify(LessonsList));
         
