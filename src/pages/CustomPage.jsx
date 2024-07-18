@@ -76,7 +76,7 @@ const CustomPage = () => {
                     </p>
                 </div>
 
-                <div className="flex mb-5">
+                <div className="flex mb-5 hidden">
                     <p className="text-2xl">
                         Consider Travelling for 1 period lesson? (buggy so cannot change for now)
                     </p>
