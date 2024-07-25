@@ -17,7 +17,7 @@ const generateTimetable = () => {
 
         const timetableDetailed = []; // diff from imported
         const timetableSummary = [];  // diff from imported
-        const dayOccupied = [false,false,false,false,false]; //keep check of occupied days
+        const dayOccupied = [false,false,false,false,false,false,false,false,false,false]; //keep check of occupied days
         let activeDays = 0;
         const lunchRemaining = [1,1,1,1,1];
         const lessons = []; //lessons remaining will push in step 0.2
@@ -194,20 +194,37 @@ const generateTimetable = () => {
     let currentBestTS = [];
     let currentBestTD = [];
     let currentBestTotalStartTimePeriod = 100;
+    let currentBestTotalEndTimePeriod = 100;
     let currentBestDays = 8;
 
     
     
 
     const slave = (lessons, dayOccupied, lunchRemaining) => {
-        let totalDays = 0;
+        let totalDays = 0;  
         let totalStartTimePeriod = 0;
+        let totalEndTimePeriod = 0;
+        /*
         dayOccupied.forEach(truthy => { 
             if (truthy !== false) {
                 totalDays++;
                 totalStartTimePeriod = totalStartTimePeriod + truthy;
             }
         })
+            */
+        for (let i = 0; i < 5; i++) {
+            let truthy = dayOccupied[i];
+            if (truthy !== false) {
+                totalDays++;
+                totalStartTimePeriod = totalStartTimePeriod + truthy;
+            }
+        }
+        for (let i = 5; i < 10; i++) {
+            let truthy = dayOccupied[i];
+            if (truthy != false) {
+                totalEndTimePeriod = totalEndTimePeriod + truthy;
+            }
+        }
         if (totalDays > currentBestDays) { // can never be better than best skip to save time
             return;
         }
@@ -218,15 +235,29 @@ const generateTimetable = () => {
                 currentBestTD = [...timetableDetailed]; // max 5 times
                 currentBestDays = totalDays;
                 currentBestTotalStartTimePeriod = totalStartTimePeriod;
+                currentBestTotalEndTimePeriod = totalEndTimePeriod;
                 return;
             }
             if (totalDays == currentBestDays && totalStartTimePeriod < currentBestTotalStartTimePeriod) {
+                return;
+            }
+            if (totalDays == currentBestDays && totalStartTimePeriod == currentBestTotalStartTimePeriod && totalEndTimePeriod > currentBestTotalEndTimePeriod) {
+                /*
+                console.log('saved');
+                console.log(currentBestTD);
+                console.log(currentBestTotalEndTimePeriod);
+                console.log('new');
+                console.log(lessons);
+                console.log(totalEndTimePeriod);
+                */
+
                 return;
             }
             currentBestTS = [...timetableSummary];
             currentBestTD = [...timetableDetailed]; // max 5 times
             currentBestDays = totalDays;
             currentBestTotalStartTimePeriod = totalStartTimePeriod;
+            currentBestTotalEndTimePeriod = totalEndTimePeriod;
             return;
         }
 
@@ -264,6 +295,9 @@ const generateTimetable = () => {
                     }
                     for (let i = 0; i <= 4; i++) {
                         lunchRemaining[i] = archivedLunchRemaining[i];
+                        //dayOccupied[i] = archivedDayOccupied[i];
+                    }
+                    for (let i = 0 ; i <= 9; i++) {
                         dayOccupied[i] = archivedDayOccupied[i];
                     }
                     //and continue
@@ -304,6 +338,10 @@ const generateTimetable = () => {
                     }
                     for (let i = 0; i <= 4; i++) {
                         lunchRemaining[i] = archivedLunchRemaining[i];
+                        //dayOccupied[i] = archivedDayOccupied[i];
+                    }
+
+                    for (let i = 0; i <=9; i++) {
                         dayOccupied[i] = archivedDayOccupied[i];
                     }
                     //and continue
@@ -480,8 +518,10 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
             if (newLessonSkip == 'Live' || newLessonSkip == 'JoinAny'){
                 if (dayOccupied[dayToAdd] === false) {
                     dayOccupied[dayToAdd] = timeSlot%13;
+                    dayOccupied[dayToAdd+5] = timeSlot%13 + newLessonLength-1;
                 } else {
-                    dayOccupied = Math.min(dayOccupied,timeSlot%13);
+                    dayOccupied[dayToAdd] = Math.min(dayOccupied[dayToAdd],timeSlot%13);
+                    dayOccupied[dayToAdd+5] = Math.max(dayOccupied[dayToAdd+5], timeSlot%13 + newLessonLength -1);
                 }
                 
             }
@@ -533,8 +573,10 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
         if (newLessonSkip == 'Live' || newLessonSkip == 'JoinAny'){
             if(dayOccupied[dayToAdd] == false) {
                 dayOccupied[dayToAdd] = timeSlot%13;
+                dayOccupied[dayToAdd+5] = timeSlot%13;
             } else {
-                dayOccupied[dayToAdd] = Math.min(timeSlot%13,dayOccupied[dayToAdd])
+                dayOccupied[dayToAdd] = Math.min(timeSlot%13,dayOccupied[dayToAdd]);
+                dayOccupied[dayToAdd+5] = Math.max(timeSlot%13,dayOccupied[dayToAdd+5])
             }
         }
         return true;
@@ -544,8 +586,10 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
         if (newLessonSkip == 'Live' || newLessonSkip == 'JoinAny'){
             if(dayOccupied[dayToAdd] == false) {
                 dayOccupied[dayToAdd] = timeSlot%13;
+                dayOccupied[dayToAdd+5] = timeSlot%13 + newLessonLength -1;
             } else {
-                dayOccupied[dayToAdd] = Math.min(timeSlot%13,dayOccupied[dayToAdd])
+                dayOccupied[dayToAdd] = Math.min(timeSlot%13,dayOccupied[dayToAdd]);
+                dayOccupied[dayToAdd+5] = Math.max(dayOccupied[dayToAdd+5],timeSlot%13 + newLessonLength -1);
             }
         }
         return true;
@@ -847,6 +891,10 @@ const tryToAddOne = (newTimetable,newModuleCode,newLessonType,newLessonSkip,time
         }
         for (let i = 0; i <= 4; i++) {
             lunchRemaining[i] = archivedLunchRemaining[i];
+            //dayOccupied[i] = archivedDayOccupied[i];
+        }
+
+        for (let i = 0; i <=9 ; i++) {
             dayOccupied[i] = archivedDayOccupied[i];
         }
         return false;
