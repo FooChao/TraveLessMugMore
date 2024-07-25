@@ -1,5 +1,5 @@
 import React from 'react'
-import { LessonsList } from '../App';
+import { CustomList, LessonsList } from '../App';
 import { lessonRefresher } from '../components/ToolsData';
 
 const handleData = (moduleData) => {
@@ -318,6 +318,7 @@ const helperSpecialOption = ((timetable) => {
 })
 
 const helperVenue = (venue) => {
+    
     if (venue == 'E-Learn_C') {
         return 'NA'
     }

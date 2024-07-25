@@ -76,13 +76,13 @@ const CustomPage = () => {
                     </p>
                 </div>
 
-                <div className="flex mb-5 hidden">
+                <div className="flex mb-5">
                     <p className="text-2xl">
-                        Consider Travelling for 1 period lesson? (buggy so cannot change for now)
+                        Consider Travelling for 1 period lesson? 
                     </p>
                     <select id="travel" name="travel" className="text-2xl" onChange={unsave} defaultValue={CustomList.travel}>
                         <option value='true' className="text-2xl">Yes</option>
-                        {/* <option value='false' className="text-2xl">No</option> */}
+                        <option value='false' className="text-2xl">No</option>
                     </select>
                     
                 </div>

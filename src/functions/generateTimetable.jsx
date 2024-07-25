@@ -530,6 +530,13 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
     }
 
     if(secondPeriod == null) {  // no second period straight return
+        if (newLessonSkip == 'Live' || newLessonSkip == 'JoinAny'){
+            if(dayOccupied[dayToAdd] == false) {
+                dayOccupied[dayToAdd] = timeSlot%13;
+            } else {
+                dayOccupied[dayToAdd] = Math.min(timeSlot%13,dayOccupied[dayToAdd])
+            }
+        }
         return true;
     }
 
@@ -743,6 +750,7 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
             
 
         } else if (added == 'TravelBack') {
+            
             switch (current) {
                 case 'Live' :
                 case 'Stacked' :
@@ -773,6 +781,7 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
             }
 
         } else if (added == 'TravelOut') {
+            
             switch (current) {
                 case 'Live' :
                 case 'JoinAny' :
