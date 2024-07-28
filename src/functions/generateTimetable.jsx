@@ -670,9 +670,9 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
                 case 'RecordedTravelOut' :
                     if (newTimetable.location === timetableDetailed[placeToAdd][1]) { 
                         timetableSummary[placeToAdd] = 'Stacked';
-                        timetableDetailed[placeToAdd] = timetableDetailed[placeToAdd] = [
+                        timetableDetailed[placeToAdd] = [
                             [newModuleCode,newLessonType,newTimetable.location],
-                            timetableDetailed[placeToAdd]
+                            timetableDetailed[placeToAdd][0]
                         ];
                         return true;
                     } else {
@@ -728,7 +728,7 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
                             timetableSummary[placeToAdd] = 'Stacked';
                             timetableDetailed[placeToAdd] = [
                                 [newModuleCode,newLessonType,newTimetable.location],
-                                timetableDetailed[placeToAdd]
+                                timetableDetailed[placeToAdd][0]
                             ];
                             return true; 
                         } else {
@@ -786,7 +786,7 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
             }
             
 
-        } else if (added == 'TravelBack') {
+        } else if (added == 'TravelBack') {   // this portion shouldn't happen anymore this is part of previous version
 
             console.log('shouldnt happen');
             
