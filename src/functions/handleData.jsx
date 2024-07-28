@@ -70,12 +70,12 @@ const helperNoOption = (timetable, moduleCode) => {
         const location = helperVenue(timeSlot.venue);
         //if slot not considered
         if (period[slot] == undefined) {
-            period[slot] = {
+            period[slot] = [{
                 included: true,
                 period : slot,
                 location : location
-            }
-            timetableSummarised.push(period[slot]);
+            }]
+            timetableSummarised.push(period[slot][0]);
             if (!days[day]) {
                 days[day] = true;
                 daysDynamic[day] = true;
@@ -83,13 +83,33 @@ const helperNoOption = (timetable, moduleCode) => {
                 //totalDaysDynamic++;
             }
         } else {
-            //if can go e we go e , else we try go com, go outside if no choice
+            /*
+            
             if (period[slot].location == 'NA') {
                 continue;
             } else if (location == 'NA') {
                 period[slot].location = 'NA';
             } else if (period[slot].location == 'EXT' && location == 'COM') {
                 period[slot].location = location;
+            }
+                */
+            let skip = false;
+            for (let i =0; i < period[slot].length; i++) {
+                if (period[slot][i].location == location) {
+                    skip = true;
+                    break;
+                }
+            }
+            if (skip) {
+                continue;
+            } else {
+                let newlyAdd = {
+                    included: true,
+                    period : slot,
+                    location : location
+                }
+                period[slot].push(newlyAdd);
+                timetableSummarised.push(newlyAdd);
             }
         }
 
@@ -144,12 +164,12 @@ const helperNormal = (timetable, moduleCode) => {
         const location = helperVenue(timeSlot.venue);
         //if slot not considered
         if (period[slot] == undefined) {
-            period[slot] = {
+            period[slot] = [{
                 included: true,
                 period : slot,
                 location : location
-            }
-            timetableSummarised.push(period[slot]);
+            }];
+            timetableSummarised.push(period[slot][0]);
             if (!days[day]) {
                 days[day] = true;
                 daysDynamic[day] = true;
@@ -158,12 +178,32 @@ const helperNormal = (timetable, moduleCode) => {
             }
         } else {
             //if can go e we go e , else we try go com, go outside if no choice
+            /*
             if (period[slot].location == 'NA') {
                 continue;
             } else if (location == 'NA') {
                 period[slot].location = 'NA';
             } else if (period[slot].location == 'EXT' && location == 'COM') {
                 period[slot].location = location;
+            }
+                */
+            let skip = false;
+            for (let i =0; i < period[slot].length; i++) {
+                if (period[slot][i].location == location) {
+                    skip = true;
+                    break;
+                }
+            }
+            if (skip) {
+                continue;
+            } else {
+                let newlyAdd = {
+                    included: true,
+                    period : slot,
+                    location : location
+                }
+                period[slot].push(newlyAdd);
+                timetableSummarised.push(newlyAdd);
             }
         }
 
@@ -229,15 +269,20 @@ const helperSpecial= ((timetable,moduleCode) => {
         for (const [index,elements] of returned.timetable.entries()) {
             if (arraysEqual(newStuff.periodCompiled, elements.periodCompiled)) {
                 //console.log('considered');
-                let firstBetter = true;
-                let secondBetter = true;
+                //let firstBetter = true;
+                //let secondBetter = true;
+                /*
+                
                 for (let i = 0; i < elements.periodCompiled.length; i++) {
                     const timeSlot = elements.periodCompiled[i];
+                    
                     const better = compareVenue(
                         newStuff.period[timeSlot].location,
                         elements.period[timeSlot].location                       
                     )
+                        
                     //console.log(better);
+                    
                     if (better == 1) {
                         secondBetter = false;
                     }
@@ -262,6 +307,8 @@ const helperSpecial= ((timetable,moduleCode) => {
                     pushIt = false;
                     break;
                 }
+                    */
+                
 
             } else {
                 continue;
@@ -320,12 +367,33 @@ const helperSpecialOption = ((timetable) => {
 const helperVenue = (venue) => {
     
     if (venue == 'E-Learn_C') {
-        return 'NA'
+        return 'NA';
     }
-    if (venue.substring(0,3) == 'COM' || venue == 'LT16' || venue == 'LT17' || venue == 'LT18' || venue == 'LT19') {
-        return 'COM'
+    if (venue.substring(0,3) == 'COM' || venue == 'LT16' || venue == 'LT17' || venue == 'LT18' || venue == 'LT19' || venue.substring(0,3) == 'CLB') {
+        return 'COM';
     }
-    return 'EXT'
+    if (venue.substring(0,3) == 'Amb' || venue.substring(0,4) == 'CAPT' || venue.substring(0,3) == 'ERC' || venue == 'NAK-AUD' || venue.substring(0,2) == 'RC' || venue.substring(0,1) == 'T' || venue.substring(0,1) == 'U' || venue.substring == 'Y-') {
+        return 'UTOWN';
+    }
+    if (venue.substring(0,2) == 'AS' || venue == "LT8" || venue == 'LT9' || venue == 'LT10' || venue == 'LT11' || venue == 'LT12' || venue == "LT13" || venue == 'LT14' || venue == "LT15") {
+        return 'AS';
+    }
+    if (venue.substring(0,3) == 'BIZ' || venue.substring == 'HSS' || venue == 'SR_LT19') {
+        return 'BIZ';
+    }
+    if (venue.substring(0,4) == "CELC" || venue.substring(0,1) == 'E' || venue == 'LT1' || venue =='LT2' || venue == 'LT3' || venue =='LT4' || venue == 'LT6' || venue == 'LT7' || venue == 'LT7A' || venue.substring(0,3) == 'SDE') {
+        return 'ENG';
+    }
+    if (venue.substring(0,4) == 'CELS' || venue.substring(0,2) == 'MD') {
+        return 'MD';
+    }
+    if (venue.substring(0,3) == 'CQT' || venue == 'Frontier' || venue == 'LT20' || venue == "LT21" || venue == 'LT26' || venue == 'LT27' || venue.substring(0,4) == 'LT28' || venue == 'LT29' || venue == 'LT31' || venue == 'LT32' || venue == 'LT33' || venue == 'LT34' || venue.substring(0,1) == 'S') {
+        return 'SCI';
+    }
+    if (venue.substring(0,3) == 'LAW') {
+        return 'LAW'
+    }
+    return venue.substring(0,4);
 }
 
 const helperDay = (dayString) => {

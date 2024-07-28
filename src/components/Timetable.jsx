@@ -31,11 +31,12 @@ const Timetable = () => {
             return <SlotLive lesson={lesson} />;
           case 'Recorded':
           case 'RecordedLunch' :
+            return <SlotRecorded lesson={lesson} />;
           case 'RecordedTravelBack':
           case 'RecordedTravelOut':
           case 'RecordedLunchTravelOut' :
           case 'RecordedLunchTravelBack' :
-            return <SlotRecorded lesson={lesson} />;
+            return <SlotRecorded lesson={lesson[0]} />;
           case 'Stacked':
             return <SlotStacked lesson={lesson} />;
           case 'Lunch':

@@ -228,6 +228,12 @@ const generateTimetable = () => {
         if (totalDays > currentBestDays) { // can never be better than best skip to save time
             return;
         }
+        if (totalDays == currentBestDays && totalStartTimePeriod < currentBestTotalStartTimePeriod) {
+            return;
+        }
+        if (totalDays == currentBestDays && totalStartTimePeriod == currentBestTotalStartTimePeriod && totalEndTimePeriod > currentBestTotalEndTimePeriod) {
+            return;
+        }
         
         if (lessons.length == 0) { // ended
             if (totalDays < currentBestDays) {
@@ -357,7 +363,11 @@ const generateTimetable = () => {
 
     }
 
+    //console.log('start');
+
     slave(lessons,dayOccupied, lunchRemaining);
+
+    //console.log('end');
 
     //console.log(currentBestTD);
     //console.log(currentBestTS);
@@ -372,39 +382,11 @@ const generateTimetable = () => {
         //console.log(lessons);  //reference
         TimetableDetailed[0] = timetableDetailed;
         TimetableSummary[0] = timetableSummary;
+        //console.log(timetableDetailed);
+        //console.log(timetableSummary);
         //console.log(dayOccupied);
         //console.log(lunchRemaining);
         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }
@@ -427,12 +409,14 @@ const zeroUpdateDataZero = (lesson) => {
     lesson.totalDays = 0;
     let options = 0;
     //loop through all in periodCompiled
-    lesson.periodCompiled.forEach((numeral) => {
-        const timeSlot = lesson.period[numeral];
+    lesson.timetable.forEach((timeSlot) => {
+        //const timeSlot = lesson.period[numeral];
         //console.log(timeSlot);
-        if (timeSlot != undefined && timeSlot.included) { // if included
+        if (timeSlot.included) { // if included
+            //console.log('hi');
             const day = Math.floor(timeSlot.period / 13);
             options++;
+            
             if (!lesson.days[day]) { // days still false
                 lesson.days[day] = true; //set it true
                 lesson.totalDays++; //increment totalDays
@@ -441,6 +425,9 @@ const zeroUpdateDataZero = (lesson) => {
         }
         
     });
+
+    //console.log('options');
+    //console.log(options)
 
     //console.log(options);
     
@@ -552,11 +539,16 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
         secondPeriod = null;
     } else if (CustomList.travel == 'false') {
         secondPeriod = null;
-    } else if (newTimetable.location == 'COM') {
+    } else {
+        secondPeriod = 'TravelOut'
+    }
+    /*
+    if (newTimetable.location == 'COM') {
         secondPeriod = 'TravelOut';
     } else {
         secondPeriod = 'TravelBack';
     }
+        */
 
     //console.log(CustomList.travel);
     //console.log(secondPeriod);
@@ -619,7 +611,7 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
                 case 'RecordedLunchTravelBack' :
                     return false;
                 case 'TravelOut' :
-                    if (newTimetable.location == 'COM') { // no need travel same location
+                    if (newTimetable.location === timetableDetailed[placeToAdd]) { // no need travel same location
                         timetableSummary[placeToAdd] = added;
                         timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];
                         return true;
@@ -639,7 +631,7 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
                     }
                 case 'LunchTravelOut' :
                     if (lunchRemaining[dayToAdd] > 1) {  // still can waste one lunch period
-                        if (newTimetable.location == 'COM') { // no need travel same location
+                        if (newTimetable.location === timetableDetailed[placeToAdd]) { // no need travel same location
                             lunchRemaining[dayToAdd]--;
                             lunchConsumed = true;
                             timetableSummary[placeToAdd] = added;
@@ -676,7 +668,7 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
                     ];
                     return true;               
                 case 'RecordedTravelOut' :
-                    if (newTimetable.location == 'COM') { // no need travel same location
+                    if (newTimetable.location === timetableDetailed[placeToAdd][1]) { 
                         timetableSummary[placeToAdd] = 'Stacked';
                         timetableDetailed[placeToAdd] = timetableDetailed[placeToAdd] = [
                             [newModuleCode,newLessonType,newTimetable.location],
@@ -687,7 +679,8 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
                         return false;
                     }                
                 case 'TravelOut' :
-                    if (newTimetable.location == 'COM') { // no need travel same location
+                    //console.log(timetableDetailed[placeToAdd]);
+                    if (newTimetable.location === timetableDetailed[placeToAdd]) { // no need travel same location
                         timetableSummary[placeToAdd] = added;
                         timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];
                         return true;
@@ -705,7 +698,7 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
                         return false;
                     }  
                 case 'LunchTravelOut' :
-                    if (lunchRemaining[dayToAdd] > 1 && newTimetable.location == 'COM') {  // still can waste one lunch period
+                    if (lunchRemaining[dayToAdd] > 1 && newTimetable.location === timetableDetailed[placeToAdd]) {  // still can waste one lunch period
                         lunchRemaining[dayToAdd]--;
                         lunchConsumed = true;
                         timetableSummary[placeToAdd] = added; // can just put joinAny as only recorded can stack with joinAny
@@ -729,7 +722,7 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
                         return false;
                     }
                     case 'RecordedLunchTravelOut' :
-                        if (lunchRemaining[dayToAdd] > 1 && newTimetable.location == 'COM') {  // still can waste one lunch period
+                        if (lunchRemaining[dayToAdd] > 1 && newTimetable.location === timetableDetailed[placeToAdd][1]) {  // still can waste one lunch period
                             lunchRemaining[dayToAdd]--;
                             lunchConsumed = true;
                             timetableSummary[placeToAdd] = 'Stacked';
@@ -769,11 +762,11 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
                 return true;
                 case 'TravelBack' :
                     timetableSummary[placeToAdd] = 'RecordedTravelBack';
-                    timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];
+                    timetableDetailed[placeToAdd] = [[newModuleCode,newLessonType,newTimetable.location],timetableDetailed[placeToAdd]];
                     return true; 
                 case 'TravelOut' :
                     timetableSummary[placeToAdd] = 'RecordedTravelOut';
-                    timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];
+                    timetableDetailed[placeToAdd] = [[newModuleCode,newLessonType,newTimetable.location],timetableDetailed[placeToAdd]];
                     return true;
                 case 'Lunch' : //it is recorded we can still eat lunch
                     timetableSummary[placeToAdd] = 'RecordedLunch';
@@ -781,10 +774,10 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
                     return true;  
                 case 'LunchTravelOut' :
                     timetableSummary[placeToAdd] = 'RecordedLunchTravelOut';
-                    timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];
+                    timetableDetailed[placeToAdd] = [[newModuleCode,newLessonType,newTimetable.location],timetableDetailed[placeToAdd]];
                 case 'LunchTravelBack' :
                     timetableSummary[placeToAdd] = 'RecordedLunchTravelBack';
-                    timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];                   
+                    timetableDetailed[placeToAdd] = [[newModuleCode,newLessonType,newTimetable.location],timetableDetailed[placeToAdd]];                   
                 default : //undefined
                     timetableSummary[placeToAdd] = 'Recorded';
                     timetableDetailed[placeToAdd] = [newModuleCode,newLessonType,newTimetable.location];
@@ -794,6 +787,8 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
             
 
         } else if (added == 'TravelBack') {
+
+            console.log('shouldnt happen');
             
             switch (current) {
                 case 'Live' :
@@ -829,22 +824,25 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
             switch (current) {
                 case 'Live' :
                 case 'JoinAny' :
-                    if ((timetableDetailed[placeToAdd][2]) == 'COM') {
+                    if ((timetableDetailed[placeToAdd][2]) === newTimetable.location ) {
                         return true
                     } else {
                         return false;
                     }
                 case 'Stacked' :
-                    if ((timetableDetailed[placeToAdd][0][2]) == 'COM') {
+                    if ((timetableDetailed[placeToAdd][0][2]) === newTimetable.location) {
                         return true
                     } else {
                         return false;
                     }                 
                 case 'Recorded' :
                     timetableSummary[placeToAdd] = 'RecordedTravelOut';
+                    //console.log('1');
+                    timetableDetailed[placeToAdd] = [timetableDetailed[placeToAdd],newTimetable.location];
                     return true;
                 case 'RecordedLunch' :
                     timetableSummary[placeToAdd] = 'RecordedLunchTravelOut';
+                    timetableDetailed[placeToAdd] = [timetableDetailed[placeToAdd],newTimetable.location];
                     return true;
                 case 'RecordedTravelBack' :
                 case 'RecordedTravelOut' :
@@ -857,9 +855,11 @@ const tryToAddZero = (newTimetable,newModuleCode,newLessonType,newLessonSkip,new
                     return false; // shouldn't happen in first place
                 case 'Lunch' :
                     timetableSummary[placeToAdd] = 'LunchTravelOut';
+                    timetableDetailed[placeToAdd] = newTimetable.location;
                     return true;
                 default : //undefined
-                    timetableSummary[placeToAdd] = 'LunchTravelOut';
+                    timetableSummary[placeToAdd] = 'TravelOut';
+                    timetableDetailed[placeToAdd] = newTimetable.location;
                     return true;
              
             }
