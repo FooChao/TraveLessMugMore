@@ -8,7 +8,7 @@ import { CustomList } from '../App';
 
 const generateTimetable = () => {
 
-    //console.log(LessonsList);
+    ///console.log(LessonsList);
   
     
     //step 0 : preprocessing datas
