@@ -1,6 +1,6 @@
-### Webpage : https://travelessmugmore.vercel.app/
+# Webpage : https://travelessmugmore.vercel.app/
 
-### Programming Language/Framework : Javascript, HTML, TailwindCSS, React
+# Programming Language/Framework : Javascript, HTML, TailwindCSS, React
 
 
 ## About this Website
@@ -50,14 +50,14 @@ Steps to use:
 
 - Note: Data won't be automatically updated after changing this. Please delete all modules and add them again.
 
-Important Things To Know
+### Important Things To Know
 - Unable to determine something is even/odd week or half semester or only for 1-2 lessons. It assumed the lessons are for all weeks. For lessons with even/odd week or those with 2 half semester lessons, I reccommend you to only add 1 of them (if they can be stacked easily) or do manual planning if there are many with such conditions. (If it is just one, it is fine). For lessons with only 1-2 lessons (e.g gen2061x only have lessons on week 3/4), just don't add them in as it is just two time thing.
-- 
+  
 - For lessons which starts at middle of period, its period will be rounded down hence potentially causing misleading timing eg. 30 min earlier than what it is. (Very rare to happen)
-- 
+  
 - For lessons at which NUSMod cramped all as lecture (such as CS2103T where all is categorised as lecture), keyed in module code with a '.' before it at which all lessons with venues with LT and AUD in it will be categorised at others. This will allow you to set the legit lecture to recorded.
 
-Location Clusters
+### Location Clusters
 Note: * represents anything
 
 - NA: E-Learn_C
