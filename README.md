@@ -1,9 +1,9 @@
-Webpage : https://travelessmugmore.vercel.app/
+### Webpage : https://travelessmugmore.vercel.app/
 
-Programming Language/Framework : Javascript, HTML, TailwindCSS, React
+### Programming Language/Framework : Javascript, HTML, TailwindCSS, React
 
 
-About this Website
+## About this Website
 This website is made to generate reccomended timetable for NUS students who do not stay in campus by fetching APIs from NUSmods API to get the data and test all possible permutations to achieve most optimal timetable.The generated timetable will prioritise achieving these in the following priority order:
 
 1. Ensuring time for lunch and travelling between locations (can be edited/removed in Custom tab)
@@ -16,7 +16,7 @@ This website is made to generate reccomended timetable for NUS students who do n
 
 5. Achieving earliest average school end time.
 
-About Tools
+## About Tools
 Steps to use:
 
 1. Edit Custom based on your preference (if necessary).
@@ -25,19 +25,19 @@ Steps to use:
 
 3. Set the lessons(tutorial/lecture/laboratory etc) to recorded, live or joinAny.
 
--Recorded lessons are lessons that can be skipped.
+- Recorded lessons are lessons that can be skipped.
 
--Live lessons are those that we need to attend in-person.
+- Live lessons are those that we need to attend in-person.
 
--JoinAny lesson are those that we can join any. For example tutorials where we don't have to go the one we bidded in courserekt (i.e no class participation). These lessons can take place concurrently with recorded lessons.
+- JoinAny lesson are those that we can join any. For example tutorials where we don't have to go the one we bidded in courserekt (i.e no class participation). These lessons can take place concurrently with recorded lessons.
 
 4. Click tick/cross to change whether the specific timeslot will be considered.
 
 5. Next, click generate timetable to generate a timetable.
 
--If a blank timetable is generated, it means it is impossible to have a timetable based on your Custom. (Consider changing Custom or changing course).
+- If a blank timetable is generated, it means it is impossible to have a timetable based on your Custom. (Consider changing Custom or changing course).
 
-About Custom
+## About Custom
 1. School starts at : All live lessons will be after this timing (except for those lessons with no options). If it is impossible to achieve this, a blank timetable will be generated.
 
 2. Eat Lunch? : Whether a period of lunch time will be reserved within the time period chosen. (reccomended to keep it as yes)
@@ -48,32 +48,32 @@ About Custom
 
 5. Academic Year/ Semester : Determines which semetser we fetch our data from.
 
--Note: Data won't be automatically updated after changing this. Please delete all modules and add them again.
+- Note: Data won't be automatically updated after changing this. Please delete all modules and add them again.
 
 Important Things To Know
 - Unable to determine something is even/odd week or half semester or only for 1-2 lessons. It assumed the lessons are for all weeks. For lessons with even/odd week or those with 2 half semester lessons, I reccommend you to only add 1 of them (if they can be stacked easily) or do manual planning if there are many with such conditions. (If it is just one, it is fine). For lessons with only 1-2 lessons (e.g gen2061x only have lessons on week 3/4), just don't add them in as it is just two time thing.
-
--For lessons which starts at middle of period, its period will be rounded down hence potentially causing misleading timing eg. 30 min earlier than what it is. (Very rare to happen)
-
--For lessons at which NUSMod cramped all as lecture (such as CS2103T where all is categorised as lecture), keyed in module code with a '.' before it at which all lessons with venues with LT and AUD in it will be categorised at others. This will allow you to set the legit lecture to recorded.
+- 
+- For lessons which starts at middle of period, its period will be rounded down hence potentially causing misleading timing eg. 30 min earlier than what it is. (Very rare to happen)
+- 
+- For lessons at which NUSMod cramped all as lecture (such as CS2103T where all is categorised as lecture), keyed in module code with a '.' before it at which all lessons with venues with LT and AUD in it will be categorised at others. This will allow you to set the legit lecture to recorded.
 
 Location Clusters
 Note: * represents anything
 
--NA: E-Learn_C
+- NA: E-Learn_C
 
--COM: COM*, CLB*, LT16, LT17, LT18, LT19
+- COM: COM*, CLB*, LT16, LT17, LT18, LT19
 
--UTOWN: AMB*, CAPT*, ERC*, RC*, T*, U*, Y-*, NAK-AUD
+- UTOWN: AMB*, CAPT*, ERC*, RC*, T*, U*, Y-*, NAK-AUD
 
--AS: AS*, LT8-15
+- AS: AS*, LT8-15
 
--ENG: CELC*, E*(except ERC*), SDE*, LT1-7, LT7a
+- ENG: CELC*, E*(except ERC*), SDE*, LT1-7, LT7a
 
--MD: MD*, CELS*
+- MD: MD*, CELS*
 
--SCI: CQT*, S*(except SDE*), Frontier, LT20-21, LT26-29, LT31-34
+- SCI: CQT*, S*(except SDE*), Frontier, LT20-21, LT26-29, LT31-34
 
--LAW: LAW*
+- LAW: LAW*
 
 *** Any locations not listed here is not part of any clusters. If you spot any mistake regarding the location cluster a location should be in, please report it via my github (link found in credits). ***
